@@ -3,6 +3,9 @@ title: "BIO782P ANOVA and Regression"
 author: "Rob Knell / Joe Parker"
 date: "8 November 2017"
 output:
+  html_notebook: default
+  html_document:
+    toc: no
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -14,9 +17,6 @@ output:
     number_sections: no
     template: ~/Dropbox/Templates_and_styles/MSc_teaching_template.tex
     toc: no
-  html_notebook: default
-  html_document:
-    toc: no
 monofont: Monaco
 mainfont: Helvetica Light
 subparagraph: yes
@@ -26,9 +26,9 @@ geometry: a4paper, margin=20mm
 # ANOVA
 
 
-Understanding how animals respond in the face of changing temperature is of obvious importance nowadays. One of the important questions that we need to understand is whether unpredictable changes in temperature have different effects from predictable, constant ones. This question was examined by Manenti et al. (2014) who described an experiment in which 25 isofemale lines of *Drosophila simulans* were reared in one of three treatments: a constant temperature  (C) of 23\textdegree , a predictably fluctuating temperature (F) which rose to 28\textdegree \enspace during the day and declined to 13\textdegree \enspace at night, and an unpredictably fluctuating temperature (U) which rose to a randomly determined value between 23\textdegree \enspace and 28\textdegree \enspace during the day and fell to a randomly determined value between 23\textdegree \enspace and 13\textdegree \enspace at night. A variety of measurements were taken of flies from each treatment.
+Understanding how animals respond in the face of changing temperature is of obvious importance nowadays. One of the important questions that we need to understand is whether unpredictable changes in temperature have different effects from predictable, constant ones. This question was examined by Manenti et al. (2014) who described an experiment in which 25 isofemale lines of *Drosophila simulans* were reared in one of three treatments: a constant temperature  (C) of 23\textdegree , a predictably fluctuating temperature (F) which rose to 28\textdegree \enspace  during the day and declined to 13\textdegree \enspace  at night, and an unpredictably fluctuating temperature (U) which rose to a randomly determined value between 23\textdegree \enspace  and 28\textdegree \enspace during the day and fell to a randomly determined value between 23\textdegree \enspace  and 13\textdegree \enspace  at night. A variety of measurements were taken of flies from each treatment.
 
-The file manenti_heatshock.txt contains data for one of these measurements: time to heat knock-down, which is the period for which the flies could withstand a temperature of 37.5\textdegree \enspace before becoming incapacitated. Each measurement is a mean value from about 10 measurements, each from a separate isofemale line.
+The file manenti_heatshock.txt contains data for one of these measurements: time to heat knock-down, which is the period for which the flies could withstand a temperature of 37.5\textdegree \enspace  before becoming incapacitated. Each measurement is a mean value from about 10 measurements, each from a separate isofemale line.
 
 
 
