@@ -3,19 +3,16 @@ title: "BIO782P ANOVA and Regression"
 author: "Rob Knell / Joe Parker"
 date: "8 November 2017"
 output:
+  html_document:
+    toc: no
+  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4
     fig_width: 5
-#    includes:
-#      in_header: ~/Dropbox/Templates_and_styles/MSc_teaching.sty
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
-#    template: ~/Dropbox/Templates_and_styles/MSc_teaching_template.tex
-    toc: no
-  html_notebook: default
-  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
@@ -52,7 +49,7 @@ The file manenti_heatshock.txt contains data for one of these measurements: time
 
   Once you have the means for each factor level then you can calculate the error sum of squares by working out the sum of the squared deviations from the factor mean for each factor level, and adding the sums of squares for each factor level together. Store this value as an object called SSerror. 
 
-  The total sums of squares is equal to the error sums of square plus the treatment sums of squares, so we can work this last value out by subtracting SSerror from SStotal.
+  What about the treatment sum of squares? Well, the total sums of squares is equal to the error sum of squares plus the treatment sums of squares, so we can work this last value out by subtracting SSerror from SStotal.
 
   Having calculated these values we can fill in an ANOVA table.
 
