@@ -1,0 +1,361 @@
+---
+title: "BIO782P Introduction to General Linear Models Cribsheet"
+author: "Rob Knell / Joe Parker"
+date: "9 November 2017"
+mainfont: Helvetica Light
+output:
+  pdf_document:
+    fig_caption: no
+    fig_height: 4
+    fig_width: 5
+#    includes:
+#      in_header: ~/Dropbox/Templates_and_styles/MSc_teaching.sty
+    keep_tex: no
+    latex_engine: xelatex
+    number_sections: no
+#    template: ~/Dropbox/Templates_and_styles/MSc_teaching_template.tex
+    toc: no
+  html_document:
+    toc: no
+monofont: Monaco
+subparagraph: yes
+geometry: a4paper, margin=20mm
+---
+
+# Basic GLMs 1: Multi-factor ANOVA
+
+**Either:**  
+
+## Bushmeat example
+
+The dataset *bushmeat.txt* contains some of the data from a study published in 2013 by Effiom et. al. to investigate the effects of bushmeat hunting on vegetation regeneration in African Rainforests. The authors compared regeneration of experimentally cleared plots in sites where there is little hunting of primates and sites where primates are rare because of hunting. There are four variables in the data file. *Dispersal* is the method of seed dispersal (abiotic, other or primates), *Hunting* is whether the plot in question is hunted or not and *Forest* refers to the specific forest that the plot in question was located in. *Number* is the number of seedlings per category a year after the plot was cleared.
+
+
+
+
+
+1.	Load the data into R. Note that this is a csv (comma separated values) file rather than tab-separated text so you’ll need to use the `read.csv()` function.
+
+2.	Check the data set using `str()`. Dispersal, Hunting and Forest should all be factors with 3,2 and 3 levels respectively. Number should be a numeric variable.
+
+3.	Draw a boxplot showing Number according to each level of Dispersal, and then another showing Number according to each level of Hunting. What do you see? Do you see anything that might make you cautious about analysing these data with a normal ANOVA?
+
+```{r}
+
+### Import data and save to object called "Bushmeat"
+
+Bushmeat<-read.csv("Bushmeat.csv")
+
+### Check data
+
+str(Bushmeat)
+
+
+attach(Bushmeat)
+
+### Draw boxplot
+
+boxplot(Number~Dispersal, col="steelblue")
+boxplot(Number~Hunting, col="steelblue")
+
+```
+
+*Boxplots are not especially symmetrical. This is because we are dealing with count data and so the distributions are bounded at zero. Also some factor levels have much wider distributions than others so we might have some issues with heteroscedasticity. This might affect our GLM but it's not clear whether we need to be concerned so for the moment we will fit a model but check the diagnostic plots carefully.*
+
+4.	Fit a two-factor ANOVA to the data with Number as a response variable and Dispersal and Hunting as explanatory variables, plus the interaction between the two.
+
+5.	Is the interaction between the two significant? Check the diagnostic plots to see if the residuals are well-behaved. If they are not, then you might be able to correct the problem by transforming the Number variable. If you need to do this, re-fit the model and check the diagnostic plots again.
+
+```{r fig.width=7, fig.height=6}
+
+### Fit the model
+
+model1<-lm(Number~Dispersal*Hunting)
+
+### Check the significance of the interaction term
+
+drop1(model1, test="F")
+
+### Check diagnostic plots
+
+par(mfrow=c(2,2)) ## plot in a 2x2 grid
+
+plot(model1)
+
+par(mfrow=c(1,1)) ## back to normal plotting
+
+```
+
+*The residuals versus fitted values plot shows fairly clear indications of heteroscedasticity - the classic "fan shape" is there. We can try to correct this by log transforming our data, but since we have some zero values in number we have to add one to each data point prior to transformation.*
+
+```{r fig.width=7, fig.height=6}
+### re-fit the model
+
+model2<-lm(log(Number+1)~Dispersal*Hunting)
+
+drop1(model2, test="F") ## Test that interaction term for significance again
+
+par(mfrow=c(2,2)) ## plot in a 2x2 grid
+
+plot(model2) ## Check diagnostics again
+
+par(mfrow=c(1,1))
+
+```
+
+*The diagnostic plots seem much improved. There are still some residuals that are a bit extreme but overall this is much better.*
+
+6.	Examine the nature of the interaction between Dispersal and Hunting by using the `interaction.plot()` function. Read the help file to find out how it works. Use Dispersal as the x.factor, Hunting as the trace.factor and Number as the response. What do you see? What does this mean?
+
+```{r fig.width=6, fig.height=5}
+
+### Interaction plot
+
+interaction.plot(Dispersal, Hunting, Number)
+
+```
+
+*The effect of hunting depends on the dispersal method used by the plant, or alternatively the response of the plants to hunting is dependent on their dispersal method. Abiotic dispersal leads to plants that are much more common in hunted forests, whereas primate-dispersed plants are much more common in forests where there is no hunting. PLants classified as "other" are intermediate.*
+
+7.	Another way of visualising these data is to draw a boxplot with the data categorised by more than one grouping factor. See if you can manage to do this. You can align the text on the x-axis to vertical using the `las=2` argument in the `boxplot` function call, but you'll also have to adjust the margins of the figure to make the x-axis text visible:
+
+```{r}
+## Adjust margin sizes to fit the axis labels
+
+par(mar=c(8,4,1,1))
+
+boxplot(Number~interaction(Hunting, Dispersal), col=c("steelblue","darkgreen"), ylab="Number", las=2)
+
+par(mar=c(5,4,4,2)+0.1)  ## Reset margins to defaults
+```
+
+
+```{r echo=FALSE}
+detach(Bushmeat)
+rm(list=ls())
+```
+
+\pagebreak
+
+
+**Or:**
+
+## Burying beetle gene expression example
+
+
+The dataset caring.csv contains a set of gene expression data for 867 genes (identified as a “caring” set of genes) from burying beetles *Nicrophorus vespilloides*. Male and female beetles which were engaged in parental care of their offspring either as part of a pair of beetles or as a single parent had their transcriptomes sequenced and compared with transcriptomes from control beetles that were not engaged in caring for offspring. The data for the 867 pairs of genes are presented as the log2-fold change in expression in the beetles that were actively caring for their offspring.
+
+
+
+1.	Load the data into R. Note that this is a csv (comma separated values) file rather than tab-separated text so you’ll need to use the `read.csv()` function.
+
+2.	Check the data set using `str()`. Sex and Biparental should be factors with 2 levels each. Log_2_fold_change should be a numeric variable.
+
+3.	The data as they are provided are signed but we want to analyse the absolute (unsigned) values since decreasing gene expression can be as important as increasing gene expression. You can convert your values to absolute ones using the abs() function.
+
+4.	Draw a boxplot showing the absolute value of Log_2_fold_change according to each level of Sex, and then another showing it according to each level of Biparental. What do you see? Do you see anything that might make you cautious about analysing these data with a normal ANOVA?
+
+```{r}
+### Load the data into an object called "caring"
+
+Caring<-read.csv("caring.csv")
+
+### Check the sructure
+
+str(Caring)
+
+### Attach the dataframe
+
+attach(Caring)
+
+### Set up new variable which is the absolute values
+
+Change<-abs(Log_2_fold_change)
+
+### Boxplots
+
+boxplot(Change~Sex, col="steelblue")
+
+boxplot(Change~Biparental, col="steelblue")
+```
+
+*The response variable looks to be quite strongly positively skewed - the boxplots are asymmetrical and there are lots of data points outside the whiskers towards the positive but not towards the negative. Remember that these data are bounded at zero. We will fit the ANOVA and carefully look at the diagnostic plots*
+
+
+
+
+5.	Fit a two-factor ANOVA to the data with the absolute (unsigned) value of Log_2_fold_change as a response variable and Sex and Biparental  as explanatory variables, plus the interaction between the two.
+6.	Is the interaction between the two significant? Check the diagnostic plots to see if the residuals are well-behaved. If they are not, then you might be able to correct the problem by transforming the Number variable. If you need to do this, re-fit the model and check the diagnostic plots again.
+
+```{r fig.width=7, fig.height=6}
+
+### Fit the model
+model1<-lm(Change~Sex*Biparental)
+
+
+### Test for significant interaction
+drop1(model1, test="F")
+
+### Diagnostics
+
+par(mfrow=c(2,2))
+plot(model1)
+par(mfrow=c(1,1))
+```
+
+*Very strong evidence of positive skew in the errors. We can try to correct for this with a log transformation.*
+
+```{r fig.width=7, fig.height=6}
+
+### Model with log transformed data
+model2<-lm(log(Change+1)~Sex*Biparental)
+
+### Test for significant interaction
+drop1(model2, test="F")
+
+### Diagnostics
+
+par(mfrow=c(2,2))
+plot(model1)
+par(mfrow=c(1,1))
+```
+
+*Still a fair amount of skew in the errors, however there is no heteroscedasticity and we have a large sample size and a balanced design so we will remember that under these circumstances the GLM is robust to departures from normality of errors and since the skew is not too extreme we'll accept our analysis.*
+
+
+7.	Examine the nature of the interaction between Sex and Biparental by using the interaction.plot() function. Read the help file to find out how it works. What do you see? What does this mean?
+
+```{r fig.width=6, fig.height=5}
+
+### Plot interaction plot
+
+interaction.plot(Sex, Biparental, Change)
+```
+
+*The degree of expression of the genes in the "caring" set changes more in females than in males, however when males are caring for offspring by themselves there is a bigger change in gene expression than in females which are caring by themselves. Males caring by themselves have a similar amount of change in gene expression to biparental females*
+
+
+
+8.	Another way of visualising these data is to draw a boxplot with the data categorised by more than one grouping factor. See if you can manage to do this.
+
+```{r}
+boxplot(Change~interaction(Sex, Biparental), col=c("steelblue","darkred")) 
+### Very hard to see patterns because of outliers - better to plot the log transformed data
+
+
+boxplot(log(Change+1)~interaction(Sex, Biparental), col=c("steelblue","darkred")) ### Slightly better
+```
+
+```{r echo=FALSE}
+detach(Caring)
+rm(list=ls())
+```
+
+[Parker DJ, Cunningham CB, Walling CA, Stamper CE, Head ML, Roy-Zokan EM, McKinney EC, Ritchie MG, Moore AJ. 2015. Transcriptomes of parents identify parenting strategies and sexual conflict in a subsocial beetle. Nat Commun 6:8449.](http://www.nature.com/ncomms/2015/150929/ncomms9449/abs/ncomms9449.html)
+
+\pagebreak
+
+# Basic GLMs 2: A continuous explanatory variable and a factor
+
+The deleterious effects of inbreeding are well known as problems in small populations. In a study published in 2014, van Bergen and colleagues described the results of an experiment to investigate the effects of inbreeding on flight performance and pheromone production in the butterfly *Bicyclus anynana*. We will analyse one part of their data to look at how flight performance relates to thorax size and to inbreeding.
+
+
+
+1.	The file van\_Bergen\_Bicyclus.txt has data from this experiment. Save it as an object in R and check the data frame using `str()`. There should be three variables. Inbreeding is a factor with three levels indicating the number of generations of sib-matings in a butterfly’s recent family history. There are three levels: none, one and two. Drythor is the dry weight of the butterfly’s thorax, and FII is the flight inhibition index – the number of times the butterfly settled during a two-minute period when it was being stimulated to take off immediately once it settled. Butterflies that are less able to fly for long bouts have higher FII measurements.
+
+2.	For some exploratory data analysis, draw a boxplot of FII grouped by inbreeding level, and a scatterplot of FII against thorax weight. 
+
+```{r}
+### Load data into object Bicyclus
+
+Bicyclus<-read.table("van_Bergen_Bicyclus.txt", header=TRUE)
+
+### Check structure
+str(Bicyclus)
+
+attach(Bicyclus)
+
+### Exploratory plots
+
+boxplot(FII~Inbreeding, col="steelblue")
+
+plot(Drythor, FII)
+```
+
+What do you see? Is there any reason to think these data might not be suitable for a standard parametric analysis?
+
+*Both plots look fine - the boxplots are reasonably symmetrical and there doesn't seem to be any heteroscedasticity. It looks as though FII is related to inbreeding but we will have to wait for the analysis to find out. he scatterplot is very noisy but looks OK*
+
+
+
+3.	Fit a model with FII as the response variable and Inbreeding, Drythor and the interaction between the two as explanatory variables.
+4.	Check your diagnostic plots. How do they look? As with the previous exercise, if the residuals are not well behaved then you might be able to correct the problem by transforming the FII variable. If you need to do this, re-fit the model and check the diagnostic plots again.
+
+```{r fig.width=7, fig.height=6}
+### Fit model
+
+model1<-lm(FII~Inbreeding * Drythor)
+
+
+### Diagnostics
+
+par(mfrow=c(2,2))
+plot(model1)
+par(mfrow=c(1,1))
+```
+
+*Diagnostics all look OK, possibly some deviation from normality in the qq plot but not enough to worry about*
+
+
+
+5.	This time we’re going to use a deletion test to assess whether our interaction term is statistically significant. Use the drop1 function with test=”F” to do this.
+6.	If the interaction term is not significant, re-fit the model without it and repeat the process until you have a minimal adequate model. Look at the summary table and try to work out what the coefficients mean.
+
+```{r}
+### Deletion test
+
+drop1(model1, test="F")
+
+### Refit model without interaction and retest
+
+model2<-lm(FII~Inbreeding + Drythor)
+
+drop1(model2, test="F")
+
+### Summary table
+
+summary(model2)
+```
+
+
+7.	Plot the data with the fitted model. You might need to think about what the best approach might be for this.
+
+```{r fig.width=6, fig.height=5}
+### Plot empty graph
+
+plot(Drythor, FII, xlab = "Thorax weight", ylab="Flight inhibition index", type="n")
+
+### Draw in points with colour coding for the factor levels
+points(Drythor[Inbreeding=="None"], FII[Inbreeding=="None"], col="darkred")
+points(Drythor[Inbreeding=="One"], FII[Inbreeding=="One"], col="orange")
+points(Drythor[Inbreeding=="Two"], FII[Inbreeding=="Two"], col="steelblue")
+
+### Draw in fitted lines
+abline(57.74, -2.971, col="darkred")
+abline(57.74 + 3.893, -2.971, col="orange")
+abline(57.74 + 8.392, -2.971, col="steelblue")
+
+### Add legend
+legend("topright", legend=c("No inbreeding", "One generation", "Two generations"), 
+       pch=1, col=c("darkred","orange","steelblue"))
+```
+
+8.	Explain the model output in words.
+
+*Flight inhibition increases with inbreeding, with those butterflies that have experienced one generation of inbreeding settling, on average, 3.8 times more in a two minute period than outbred animals, and those that have experienced two generations of inbreeding settling an average of 8.4 times more than outbred butterflies every two minutes. Butterflies with heavier thoraxes tended to settle less, so a one unit increase in thorax dry weight corresponded to an average decrese in the number of settlings by a butterfly of 2.9. This effect of thorax weight was constant across all inbreeding treatments.*
+
+```{r echo=FALSE}
+detach(Bicyclus)
+rm(list=ls())
+```
+Bergen, E. van, Brakefield, P.M., Heuskin, S., Zwaan, B.J., and Nieberding, C.M. (2013). The scent of inbreeding: a male sex pheromone betrays inbred males. Proc. R. Soc. B 280, 20130102.
