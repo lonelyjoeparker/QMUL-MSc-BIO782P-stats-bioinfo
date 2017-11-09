@@ -1,25 +1,23 @@
 ---
-title: "BIO781P Basic statistical tests in R"
-author: "Rob Knell"
-date: "6 November 2016"
-mainfont: "Helvetica Light"
-monofont: Monaco
+title: "BIO782P Basic statistical tests in R"
+author: "Rob Knell / Joe Parker"
+date: "7 November 2017"
 output:
+  html_document:
+    toc: no
+  html_notebook: default
   pdf_document:
-    includes:
-        in_header: ~/Dropbox/Templates_and_styles/MSc_teaching.sty
-    template: ~/Dropbox/Templates_and_styles/MSc_teaching_template.tex
     fig_caption: no
+    fig_height: 4
+    fig_width: 5
+    includes: null
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
     toc: no
-    fig_width: 5
-    fig_height: 4
-  html_notebook: default
-  html_document:
-    toc: no
-subparagraph: true
+monofont: Monaco
+mainfont: Helvetica Light
+subparagraph: yes
 geometry: a4paper, margin=20mm
 ---
 
