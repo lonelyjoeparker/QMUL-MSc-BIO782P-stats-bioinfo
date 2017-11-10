@@ -1,29 +1,3 @@
----
-title: "BIO782P - Week 1 Assessment"
-author: "Joe Parker"
-date: "10th November 2017"
-output:
-  html_document:
-    toc: no
-  html_notebook: default
-  pdf_document:
-    fig_caption: no
-    fig_height: 4
-    fig_width: 5
-    keep_tex: no
-    latex_engine: xelatex
-    number_sections: no
-    toc: no
-monofont: Monaco
-mainfont: Helvetica Light
-subparagraph: yes
-geometry: a4paper, margin=20mm
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # BIO782P Statistics and Bioinformatics Assignment 2017
 
 ## Due: 17:00 Friday 1 December 2017
@@ -62,7 +36,7 @@ For your report, please use an appropriate analysis to answer the following ques
 
 ## Dataset 3: HIV viral load and within-patient population dynamics
 
-Populations of the HIV virus are able to evade drug therapy and persist in certain immunoprotected tissues in the body, principally areas of the central nervous system (CNS) where CD4+ T-cells are prevented from entering. An HIV+ patient has enrolled in a study and consented to viral load sampling over 40 weeks in a year. Each week a sample was taken from the brain or spinal cord, and the viral population size ('load', here expressed as log10(number of viral particles per ml)) measured using a chip assay. Average pairwise genetic distance amongst individual viruses present each weekly sample was assessed using single-copy PCR amplification of the viral Env gene, and we hope to find some relationship between population size, diversity, and tissue.
+Populations of the HIV virus are able to evade drug therapy and persist in certain immunoprotected tissues in the body, principally areas of the central nervous system (CNS) where CD4+ T-cells are prevented from entering. An HIV+ patient has enrolled in a study and consented to viral load sampling over 40 weeks in a year. Each week a sample was taken from the brain or spinal cord, and the viral population size ('load', here expressed as log10(number of viral particles per ml)) measured using a chip assay. Average Shannon population diversity, and mean pairwise genetic distance from individual viruses present in each weekly sample to a reference sequence was assessed using single-copy PCR amplification of the viral Env gene, and we hope to find some relationship between population size, diversity, evolutionary distance and tissue.
 
 The sampling (involing an epidural needle inserted deep into the CNS) is painful and carries a high risk of complications, so we need to make sure we make the most of this data. Do your best to fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure. Write up your results accordingly, with any figures which are appropriate for the research paper we plan to write. Since we're unsure how likely the host immune system is to penetrate the CNS, CD4+ cell counts in the patient's general circulation were assessed using flow cytometry, and categorized as 'low' or 'high' - you may wish to consider these in your analysis. The rows in the data table are in chronological order.
 
@@ -91,10 +65,6 @@ to do this, if you’re reporting a negative result and you think it’s necessa
  * Including code, function names etc. from R. Results sections from journals wouldn’t usually include this kind of material unless you’re describing an esoteric analysis that the readers will not be familiar with, in which case you might say “We fitted a generalised additive model to the data using the gam() function as implemented in the mcgv package (Wood 2014)” but usually you would just tell the reader the type of analysis used.
  * Referring to “non-significant” results as “insignificant”. Don’t do this - have a think about why.
  * No references! Not a single person put a reference in their results section.
-
-### (Student IDs overleaf)
-
-\pagebreak 
 
 ## Student names and datasets:
 
