@@ -30,7 +30,24 @@ Software today; you'll need:
 
  - RAXML (try `raxml -v` on the command line, or `raxmlHPC -v`; if not you may need to `sudo apt-get raxml`)
  - `FigTree` and `beast`, both part of the BEAST package at http://beast.bio.ed.ac.uk
+
+### Building RAxML
+
+ 1. Download the zip file from https://github.com/stamatak/standard-RAxML
+ 2. Extract to a folder
+ 3. `cd` into the folder and build RAxML from source:
  
+```{bash eval=F}
+# move into the right directory
+cd <some folder>
+
+# Build RAxML
+make -f Makefile.gcc
+
+# check it works
+./raxmlHPC -v
+```
+
 ## Part 1 – Phylogeography of island chains (30mins)
 
 There are two datasets from two genera of flowering plants, both distributed on the Hawaiian islands. One is wind-dispersed, the other is dispersed by mammals. We will investigate their distributions and look for a phylogeographic pattern. A map of the islands is shown in Fig. 1. The islands themselves have formed at different times from a chain of seamounts arising from two tectonic plates:
