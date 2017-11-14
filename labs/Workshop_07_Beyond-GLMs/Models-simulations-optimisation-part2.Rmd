@@ -3,6 +3,9 @@ title: "Biological models"
 author: "Joe Parker"
 date: "14th November 2017"
 output:
+  html_document:
+    toc: no
+  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -10,9 +13,6 @@ output:
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
-    toc: no
-  html_notebook: default
-  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Software today; you'll need:
 
  - RAXML (try `raxml -v` on the command line, or `raxmlHPC -v`; if not you may need to `sudo apt-get raxml`)
- - `FigTree` and `beast`, both part of the BEAST package at http://beast.bio.ed.ac.uk
+ - `FigTree` and `Tracer`, both part of the BEAST package at http://beast.bio.ed.ac.uk. The FigTree archive is at http://tree.bio.ed.ac.uk/download.html?name=figtree&id=96&num=3 and the Tracer archive is at http://tree.bio.ed.ac.uk/download.html?name=tracer&id=88&num=3.
 
 ### Building RAxML
 
@@ -48,6 +48,34 @@ make -f Makefile.gcc
 ./raxmlHPC -v
 ```
 
+To use RAxML you will need to make sure the paths to `raxmlHPC` and `mc.paml` are both fully specified, or RAxML won't be able to find it. You can either do this by putting them in the same directory (not great), making a zillion copies of both every time you change projects (....) or creating an alias. An alias is a pointer which tells the shell 'when I ask for this, look for it here', e.g.
+
+```{bash eval=F}
+alias myraxmllocation=/Applications/Phylogenetics/RAxML/RAxML-7.2.8-ALPHA/raxmlHPC
+cd ~
+myraxmllocation -v
+#
+#This is RAxML version 7.2.8 released by Alexandros Stamatakis in October 2010.
+#
+#With greatly appreciated code contributions by:
+#Andre Aberer (TUM)
+#Simon Berger (TUM)
+#John Cazes (TACC)
+#Michael Ott (TUM)
+#Nick Pattengale (UNM)
+#Wayne Pfeiffer (SDSC)
+#Akifumi S. Tanabe (Univ. Tsukuba)
+```
+
+
+### Downloading and building FigTree and Tracer
+
+ 1) First download the *.tgz files listed above. These are compressed archives (directories). Unpack them somewhere (doesn't matter where). 
+ 2) Open a new terminal window and `cd` into the folder you extracted. Look for a `lib` folder and enter it.
+ 3) FigTree and Tracer are both supplied as Java executables. To run these we call `java`, telling it to expect an executable, like this:
+ `java -jar Tracer.jar`
+ Where the `-jar` option just means 'I'm going to give you an executable, look here for instructions. The process is the same for FigTree.
+ 
 ## Part 1 – Phylogeography of island chains (30mins)
 
 There are two datasets from two genera of flowering plants, both distributed on the Hawaiian islands. One is wind-dispersed, the other is dispersed by mammals. We will investigate their distributions and look for a phylogeographic pattern. A map of the islands is shown in Fig. 1. The islands themselves have formed at different times from a chain of seamounts arising from two tectonic plates:
@@ -58,12 +86,14 @@ There are two datasets from two genera of flowering plants, both distributed on 
  
 We're going to use a program called RAxML to infer the tree. There are **many** possible parameters to supply, but for now:
 ```bash
-raxml -s mc.paml -n model-gtrgammaiN20 -m GTRGAMMAI 
+raxml -s mc.paml -n model-gtrgammaiN20 -m GTRGAMMAI -p 33399
 # where:
 # -s = input sequence file (don't change this)
 # -n = name of the analysis outputs- this must be unique for different runs 
 #      RAxML won't let you overwrite existing files
 # -m = the model describing the nucleotide evolution (see below)
+# -p = random seed. The computer uses this to 'create' a list of random numbers.
+#      must be a positive integer
 ```
 
 Open the finished tree in FigTree, and compare the phylogeny with the map.
