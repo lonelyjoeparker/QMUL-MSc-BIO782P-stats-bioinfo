@@ -1,4 +1,5 @@
 # Use an official Python runtime as a parent image
+FROM ubuntu:16.04
 FROM python:2.7-slim
 
 # Set the working directory to /app
@@ -11,10 +12,12 @@ ADD . /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Make port 80 available to the world outside this container
-EXPOSE 80
+#EXPOSE 80
 
 # Define environment variable
 ENV NAME World
 
 # Run app.py when the container launches
-CMD ["python", "app.py"]
+#CMD ["python", "app.py"]
+#ENTRYPOINT ["python", "really_simple.py"]
+ENTRYPOINT ["bash", "simpler.sh"]
