@@ -1,0 +1,12 @@
+universe = docker
+docker_image = cyverseuk/raxml:v0.0.3
+
+output = RAxML.out
+error = RAxML.err
+log = RAxML.log
+
+request_memory = 124G
+request_cpus = 12
+
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
