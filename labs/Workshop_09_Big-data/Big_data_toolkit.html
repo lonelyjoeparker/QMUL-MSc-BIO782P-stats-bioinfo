@@ -143,7 +143,7 @@ singularity pull --size 1000 docker://docker/whalesay
 # now we can run the container locally, using Singularity
 singularity exec whalesay.img foo</code></pre>
 <p>Output:</p>
-<pre class="bash"><code>[xyz123@frontend11 ~]$ singularity exec whalesay.img cowsay foo
+<pre class="bash"><code>[xyz123@frontend11 ~]$ singularity exec whalesay.img echo foo
  _____ 
 &lt; foo &gt;
  ----- 
@@ -161,12 +161,12 @@ singularity exec whalesay.img foo</code></pre>
 </div>
 <div id="using-the-grid-to-submit-jobs" class="section level2">
 <h2>Using the grid to submit jobs</h2>
-<p>To make full use of the cluster, we need to use the grid engine to submit our job. Look at the file <code>helloworld_singularity.sh</code></p>
+<p>To make full use of the cluster, we need to use the grid engine to submit our job. Look at the file <code>helloworld_container/helloworld_singularity.sh</code></p>
 <p>This can be submitted to the queue with <code>qsub helloworld_singularity.sh</code>.</p>
 </div>
-<div id="writing-a-docker-container" class="section level2">
-<h2>Writing a Docker container</h2>
-<p>We’re going to write a container that can (could) run on the cluster.</p>
+<div id="writing-a-docker-container-demonstration-only" class="section level2">
+<h2>Writing a Docker container (demonstration only)</h2>
+<p>We’re going to see how to write a container that can (could) run on the cluster.</p>
 <p>Steps:</p>
 <ol style="list-style-type: decimal">
 <li>Install docker To install Docker on Linux see <a href="https://docs.docker.com/get-started/part2" class="uri">https://docs.docker.com/get-started/part2</a></li>
@@ -189,26 +189,68 @@ lonelyjoeparker/phylodev   helloworld          2f46202d0519        3 hours ago  
 <ol start="4" style="list-style-type: decimal">
 <li><p>Check it works: Try <code>docker run some_container_name</code></p></li>
 <li><p>Get a docker hub account. Now this container works we can run it anywhere that supports Docker or Singularity - but we’ll use Apocrita! First we have to upload our image to <a href="https://hub.docker.com" class="uri">https://hub.docker.com</a> and you’ll need to get an account to do this. You will also need to create a repository. This will be public.</p></li>
-<li>Tag it <code>docker tag &lt;your container name&gt; &lt;&gt;/phylodev:helloworld</code></li>
-<li>Push it</li>
-<li><p>Check it’s there</p></li>
+<li><p>Tag it <code>docker tag &lt;your container name&gt; &lt;your_dockerhub_username&gt;/&lt;your_repository&gt;:&lt;some_random_tag&gt;</code></p></li>
+<li><p>Push (upload) it to your repository <code>docker push &lt;your_dockerhub_username&gt;/&lt;your_repository&gt;:&lt;some_random_tag&gt;</code></p></li>
 </ol>
+<p>You should be able to see it (after a few minutes) if you open your account e.g. <code>https://hub.docker.com/r/&lt;your_dockerhub_username&gt;/</code></p>
 </div>
 <div id="pulling-our-own-docker-container" class="section level2">
 <h2>Pulling our own Docker container</h2>
 <p>We will pull our container from Docker Hub.</p>
 <ol style="list-style-type: decimal">
-<li>Go to the correct dir on apocrita</li>
-<li>singularity pull</li>
-<li>check it works</li>
-<li>whoop</li>
+<li><p>Go to the correct dir on apocrita <code>cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/helloworld-singularity</code></p></li>
+<li><p>Pull your image: <code>singularity pull &lt;your_dockerhub_username&gt;/&lt;your_repository&gt;:&lt;some_random_tag&gt;</code></p></li>
 </ol>
+<p>It will be created as a <your_image>.img image file.</p>
+<ol start="3" style="list-style-type: decimal">
+<li><p>Check it works: <code>singularity run &lt;your_image.img&gt;</code></p></li>
+<li><p>Run through the queue properly - write a minimal qsub file (<code>helloworld_singularity.sh</code>):</p></li>
+</ol>
+<pre class="bash"><code>#$ -cwd
+#$ -S /bin/bash
+#$ -j y
+#$ -pe smp 1
+#$ -l h_vmem=2G
+
+### run the whalesay container from Docker Hub
+module load singularity
+singularity run -B /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/helloworld_container:/data phylodev-helloworld.img  oooo</code></pre>
+<p>Now we can submit this with <code>qsub helloworld_singularity.sh</code></p>
 </div>
 <div id="putting-it-together---running-our-container-on-the-grid-to-fit-a-model." class="section level2">
 <h2>Putting it together - running our container on the grid to fit a model.</h2>
-<p>I have put a RAxML docker image on the hub. It just runs raxml with arguments we give it on the qsub file, and exits.</p>
-<p>We run it with singularity We call it with qsub We need to mount (‘bind’ in singularity language) it to the machine</p>
-<p>We will (fairly exhastively run a script to collect the results)</p>
+<p><code>cd</code> to <code>/data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/raxml-container-test/RAxML</code>. I have put a RAxML docker image on the hub (<code>phylodev_helloworld.img</code>). It just runs raxml with arguments we give it on the qsub file, and exits.</p>
+<ul>
+<li>We run it with singularity (<code>singularity exec &lt;image&gt;</code>) in a qsub shell script file (<code>raxml_singularity.sh</code>). Here’s that file:</li>
+</ul>
+<pre class="bash"><code> #$ -cwd
+#$ -S /bin/bash
+#$ -j y
+#$ -pe smp 1
+#$ -l h_vmem=2G
+
+### run the whalesay container from Docker Hub
+module load singularity
+singularity run -B /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/raxml-container-test/RAxML:/tmp phylodev-helloworld.img -s demo_data/mc.paml -m GTRGAMMAI -p 122 -n agave_01  </code></pre>
+<ul>
+<li>The script actually calls RAxML via a helper script in <code>tmp/runRAxML.sh</code>, so we need to make sure this is executable (<code>chmod +x tmp/runRAxML.sh</code>; I’ve already done this). We also need to mount (‘bind’ in singularity language) the working directory to the machine, to that the container can read/write files from the outside world (e.g. the cluster). We do this by invoking Singularity with the <code>-B</code> option (for ‘bind’ - the equivalent operation on a normal Docker engine would be <code>-v</code>, for ‘volume’:</li>
+</ul>
+<p><code>singularity run -B &lt;full_path&gt;:/class_data</code>.</p>
+<p>We can now run this to analyse the input file from Tuesday (<code>mc.paml</code>) with the qsub script, but <strong>first</strong> edit the qsub file to change the model, random seed, and run name (see your notes from Tuesday’s practical, or <code>&lt;path-to-raxml&gt;/raxmlHPC -h</code> on your own machine for how to do this.</p>
+<ul>
+<li><p>We call it with qsub (<code>qsub raxml_singularity.sh</code>).</p></li>
+<li><p>Can you see the output? What was the log-likelihood?</p></li>
+<li><p>To compare, run the same model on the same data, using the version of RAxML on your computer, with the same random seed. Are there any differences?</p></li>
+<li>Finally we’re going to analyse 19 datasets from a mammalian genome. Each of you will analyse one gene, trying different models (GTRGAMMA, GTRGAMMAI, GTRCAT, GTRCATI) with whatever combinations of random starting trees and/or multiple start points (see Tuesday) you like, and we’ll combine the results.:
+<ul>
+<li>The input files are in <code>input_data</code>, listed against your surname.</li>
+<li>Run your dataset now locally, to check you can run it.</li>
+<li>Run it on the cluster, to check it works with the singularity container. What do you need to change for the container to use this input file?</li>
+<li>You can now try different combinations. Every time you produce a finished tree (RAxML_bestTRee.*), copy this to the <code>output_trees</code> directory. I’ll periodically compute a summary tree from this directory.</li>
+<li>Can you work out how run multiple models as separate jobs?</li>
+<li>Can you work out how you could investigate different numbers of starting trees as an array job? (*Hint: see <a href="https://docs.hpc.qmul.ac.uk/using/arrays/*" class="uri">https://docs.hpc.qmul.ac.uk/using/arrays/*</a>)</li>
+</ul></li>
+</ul>
 </div>
 
 

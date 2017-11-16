@@ -30,11 +30,13 @@ knitr::opts_chunk$set(echo = TRUE)
 0. For this practical we're lucky enough to use Apocrita, the main QMUL HPC resource with [1000s of cores available](https://docs.hpc.qmul.ac.uk/nodes/). We can do a *lot* of damage here, so we need to be responsible! Before going any further make sure you've read the QMUL [Usage Policy](https://docs.hpc.qmul.ac.uk/intro/usage_policy/).
 
 1. First we'll login to the grid. Use your QMUL username (`xyz123`) to log in with ssh ([QMUL login help](https://docs.hpc.qmul.ac.uk/intro/login/)):
+
 ```{bash eval=F}
 ssh xyz123@login.hpc.qmul.ac.uk
 ```
 
 2. [Singularity](http://singularity.lbl.gov/) is an academic counterpart to Docker, used to run containers on HPC grids safely (you can do a lot of damage with all that power...!).  First we'll use it to run a Docker [Whalesay](https://hub.docker.com/r/docker/whalesay/) image (sort-of a HelloWorld for Docker images); then you'll run your image from this morning; finally we'll look at grid submissions. First we need to load the singularity module, pull the Whalesay image from Docker Hub, and then we can run it locally:
+
 ```{bash eval=F}
 # load the Singularity module
 module load singularity
@@ -46,9 +48,11 @@ singularity pull --size 1000 docker://docker/whalesay
 # now we can run the container locally, using Singularity
 singularity exec whalesay.img foo
 ```
+
 Output:
+
 ```{bash eval=F}
-[xyz123@frontend11 ~]$ singularity exec whalesay.img cowsay foo
+[xyz123@frontend11 ~]$ singularity exec whalesay.img echo foo
  _____ 
 < foo >
  ----- 
@@ -67,13 +71,13 @@ Output:
 
 ## Using the grid to submit jobs
 
-To make full use of the cluster, we need to use the grid engine to submit our job. Look at the file `helloworld_singularity.sh`
+To make full use of the cluster, we need to use the grid engine to submit our job. Look at the file `helloworld_container/helloworld_singularity.sh`
 
 This can be submitted to the queue with `qsub helloworld_singularity.sh`.
 
-## Writing a Docker container
+## Writing a Docker container (demonstration only)
 
-We're going to write a container that can (could) run on the cluster. 
+We're going to see how to write a container that can (could) run on the cluster. 
 
 Steps:
 
@@ -81,6 +85,7 @@ Steps:
  To install Docker on Linux see https://docs.docker.com/get-started/part2
  1. Start an instance of the Docker machine on your host computer: `docker-machine start`
  2. Check docker is working by pulling whalesay to this host:
+
 ```{bash eval=F}
 docker pull docker/whalesay
 docker image list
@@ -111,31 +116,73 @@ lonelyjoeparker/phylodev   helloworld          2f46202d0519        3 hours ago  
  `docker tag <your container name> <your_dockerhub_username>/<your_repository>:<some_random_tag>`
 
  7. Push (upload) it to your repository
- `docker push <your_dockerhub_username>/<your_repository>:<some_random_tag>`
+`docker push <your_dockerhub_username>/<your_repository>:<some_random_tag>`
+ 
  You should be able to see it (after a few minutes) if you open your account e.g. `https://hub.docker.com/r/<your_dockerhub_username>/`
 
 ## Pulling our own Docker container
 
 We will pull our container from Docker Hub.
 
- 1. Go to the correct dir on apocrita
+ 1. Go to the correct dir on apocrita `cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/helloworld-singularity`
  
  2. Pull your image: `singularity pull <your_dockerhub_username>/<your_repository>:<some_random_tag>`
+ 
  It will be created as a <your_image>.img image file.
  
  3. Check it works: `singularity run <your_image.img>`
  
- 4. Run through the queue properly - write a minimal qsub file.
+ 4. Run through the queue properly - write a minimal qsub file (`helloworld_singularity.sh`):
  
+```{bash eval=F}
+#$ -cwd
+#$ -S /bin/bash
+#$ -j y
+#$ -pe smp 1
+#$ -l h_vmem=2G
+
+### run the whalesay container from Docker Hub
+module load singularity
+singularity run -B /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/helloworld_container:/data phylodev-helloworld.img  oooo
+```
+
+Now we can submit this with `qsub helloworld_singularity.sh` 
 
 ## Putting it together - running our container on the grid to fit a model.
 
-I have put a RAxML docker image on the hub. It just runs raxml with arguments we give it on the qsub file, and exits.
+`cd` to `/data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/raxml-container-test/RAxML`. I have put a RAxML docker image on the hub (`phylodev_helloworld.img`). It just runs raxml with arguments we give it on the qsub file, and exits.
 
- * We run it with singularity
- * We call it with qsub
- * We need to mount ('bind' in singularity language) it to the machine e.g. `singularity run -B <full_path>:/class_data`. We can now run this with a qsub script.
+ * We run it with singularity (`singularity exec <image>`) in a qsub shell script file (`raxml_singularity.sh`). Here's that file:
+ 
+```{bash eval=F}
+ #$ -cwd
+#$ -S /bin/bash
+#$ -j y
+#$ -pe smp 1
+#$ -l h_vmem=2G
 
-We will (fairly exhastively run a script to collect the results)
-
-Now we can run a class problem! The directory
+### run the whalesay container from Docker Hub
+module load singularity
+singularity run -B /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/raxml-container-test/RAxML:/tmp phylodev-helloworld.img -s demo_data/mc.paml -m GTRGAMMAI -p 122 -n agave_01  
+```
+ 
+ * The script actually calls RAxML via a helper script in `tmp/runRAxML.sh`, so we need to make sure this is executable (`chmod +x tmp/runRAxML.sh`; I've already done this). We also need to mount ('bind' in singularity language) the working directory to the machine, to that the container can read/write files from the outside world (e.g. the cluster). We do this by invoking Singularity with the `-B` option (for 'bind' - the equivalent operation on a normal Docker engine would be `-v`, for 'volume':
+ 
+`singularity run -B <full_path>:/class_data`. 
+ 
+We can now run this to analyse the input file from Tuesday (`mc.paml`) with the qsub script, but **first** edit the qsub file to change the model, random seed, and run name (see your notes from Tuesday's practical, or `<path-to-raxml>/raxmlHPC -h` on your own machine for how to do this.
+ 
+ * We call it with qsub (`qsub raxml_singularity.sh`). 
+ 
+ * Can you see the output? What was the log-likelihood?
+ 
+ * To compare, run the same model on the same data, using the version of RAxML on your computer, with the same random seed. Are there any differences?
+ 
+ * Finally we're going to analyse 19 datasets from a mammalian genome. Each of you will analyse one gene, trying different models (GTRGAMMA, GTRGAMMAI, GTRCAT, GTRCATI) with whatever combinations of random starting trees and/or multiple start points (see Tuesday) you like, and we'll combine the results.:
+     - The input files are in `input_data`, listed against your surname.
+     - Run your dataset now locally, to check you can run it.
+     - Run it on the cluster, to check it works with the singularity container. What do you need to change for the container to use this input file?
+     - You can now try different combinations. Every time you produce a finished tree (RAxML_bestTRee.*), copy this to the `output_trees` directory. I'll periodically compute a summary tree from this directory.
+     - Can you work out how run multiple models as separate jobs?
+     - Can you work out how you could investigate different numbers of starting trees as an array job? (*Hint: see https://docs.hpc.qmul.ac.uk/using/arrays/*)
+ 
