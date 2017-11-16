@@ -1,0 +1,16 @@
+{
+  "name" : "RAxMLExampleJob",
+  "appId" : "RAxML8.2.9-0.0.1",
+  "archive" : "false",
+  "batchQueue" : "normal",
+  "inputs" : {
+    "phy_file" : "agave://cyverseUK-Storage2/RAxML/demo_data/dna_protein.phy",
+    "mmodel_part_file": "agave://cyverseUK-Storage2/RAxML/demo_data/dna_protein_partitions.txt"
+  },
+  "parameters" : {
+    "algorithm" : "d",
+    "model": "PROT",
+    "model2": "GAMMA",
+    "model_aamatrix": "WAG",
+  }
+}

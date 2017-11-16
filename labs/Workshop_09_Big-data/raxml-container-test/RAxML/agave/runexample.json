@@ -1,0 +1,15 @@
+{
+  "name" : "RAxMLExampleJob",
+  "appId" : "RAxML8.2.9-0.0.1",
+  "archive" : "false",
+  "batchQueue" : "normal",
+  "inputs" : {
+    "phy_file" : "agave://cyverseUK-Storage2/RAxML/demo_data/protein.phy"
+  },
+  "parameters" : {
+    "algorithm" : "d",
+    "model": "PROT",
+    "model2": "GAMMA",
+    "model_aamatrix": "GTR"
+  }
+}
