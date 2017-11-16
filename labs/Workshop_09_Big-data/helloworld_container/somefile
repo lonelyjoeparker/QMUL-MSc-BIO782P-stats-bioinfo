@@ -1,0 +1,13 @@
+words (Unix)
+From Wikipedia, the free encyclopedia
+words is a standard file on all Unix and Unix-like operating systems, and is simply a newline-delimited list of dictionary words. It is used, for instance, by spell-checking programs.[1]
+
+The words file is usually stored in /usr/share/dict/words or /usr/dict/words.
+
+On Debian and Ubuntu, the words file is provided by the wordlist package, or its provider packages wbritish, wamerican, etc. On Fedora and Arch, the words file is provided by the words package.
+
+References[edit]
+Jump up ^ Tushar, Shantanu (2013). Linux Shell Scripting Cookbook. Birmingham, UK.: Packt Publishing. pp. 219–220. ISBN 978-1-78216-275-9.
+External links[edit]
+Sample words file from Duke CS department
+
