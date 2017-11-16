@@ -6,4 +6,4 @@
 
 ### run the whalesay container from Docker Hub
 module load singularity
-singularity run phylodev-helloworld.img  oooo -o whales.out
+singularity run -B /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/helloworld_container:/data phylodev-helloworld.img  oooo -o whales.out
