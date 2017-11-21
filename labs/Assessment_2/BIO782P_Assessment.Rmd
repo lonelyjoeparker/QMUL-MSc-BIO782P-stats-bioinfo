@@ -1,10 +1,10 @@
 ---
-title: "BIO782P Assessment 2"
+title: 'BIO782P Assessment 2 #v2-corrected'
 author: "Joe Parker"
-date: "19/11/2017"
+date: "21/11/2017"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -42,7 +42,7 @@ A colleague has written some R code to analyse this behaviour by fitting a model
 ```{r eval=FALSE}
 predict = function(activation_threshold,stimulation_voltage){
   activation = rep(-70,length(stimulation_voltage))
-  activation[activation>activation_threshold] = 40
+  activation[stimulation_voltage>activation_threshold] = 40
   return(activation)
 }
 
