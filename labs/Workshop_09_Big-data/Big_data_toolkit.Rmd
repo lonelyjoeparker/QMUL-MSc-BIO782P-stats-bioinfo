@@ -3,6 +3,9 @@ title: "Grid computing, containers, and big data"
 author: "Joe Parker"
 date: "16th November 2017"
 output:
+  html_document:
+    toc: no
+  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -10,9 +13,6 @@ output:
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
-    toc: no
-  html_notebook: default
-  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
@@ -24,8 +24,9 @@ geometry: a4paper, margin=20mm
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
 ## Running containers
+
+00. Take a look at http://bioboxes.org/docs/example-biobox-use/ and http://bioboxes.org/docs/assemble-a-genome/ to get an idea of the kind of things containers can be used for.
 
 0. For this practical we're lucky enough to use Apocrita, the main QMUL HPC resource with [1000s of cores available](https://docs.hpc.qmul.ac.uk/nodes/). We can do a *lot* of damage here, so we need to be responsible! Before going any further make sure you've read the QMUL [Usage Policy](https://docs.hpc.qmul.ac.uk/intro/usage_policy/).
 
