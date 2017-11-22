@@ -3,6 +3,9 @@ title: "BIO782P - Week 1 Assessment"
 author: "Joe Parker"
 date: "10th November 2017"
 output:
+  html_notebook: default
+  html_document:
+    toc: no
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -10,9 +13,6 @@ output:
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
-    toc: no
-  html_notebook: default
-  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
@@ -37,13 +37,13 @@ Having read the description of the way the data were collected, you need to impo
 
 For each dataset, your writeup should consist of a properly annotated R script that will allow me to exactly replicate your analysis, and the results section of a paper describing your findings (please collate the reports into a single document). **NOTE:** Marks will be deducted for scripts that do not run, while bonus marks (max 5%) are available for scripts submitted as pull requests to the class GitHub.
 
-The report should be no more than 1000 words (and can be a lot less...) and should not contain any unnecessary figures or tables. If in doubt have a look at some papers in (for example) PLoS Biology or Genome Biology & Evolution to see how it's done. Please don’t paste output from R directly into your report, by which I mean don’t just paste a summary table or an ANOVA table in (not that you shouldn’t use graphics from R). 
+The report should be no more than 1000 words for all three parts (and can be a lot less...) and should not contain any unnecessary figures or tables. The word count excludes code, figure/table legends, and any references you want to include. If in doubt have a look at some papers in (for example) PLoS Biology or Genome Biology & Evolution to see how it's done. Please don’t paste output from R directly into your report, by which I mean don’t just paste a summary table or an ANOVA table in (not that you shouldn’t use graphics from R). 
 
 ## Dataset 1: Marine microbial diversity
 
 In two successive research cruises (January and August), the RRS Discovery survey ship has sampled 20l of seawater from 10 separate locations within approximately equatorial (0-8 degrees N) and equatorial (48-55 degrees N) waters of the North Atlantic (e.g., the Azores and British Isles, respectively). Each sample was filtered with a coarse filter to remove macroinvertebrates, then filtered using a 50uM mesh to collect microbiota. DNA was extracted, WGS sequenced with an Oxford Nanopore MinION, and sequence reads identified using BLASTN. Microbial diversity was assessed using UniFrac, and is expressed relative to a reference sample sequenced at MBL, Plymouth.
 
-For the report, please use an appropriate analysis to answer the following questions (**Note:** ignore variables X and Y in the datafile):
+For the report, please **use an appropriate analysis to answer the following questions** (*Note:* ignore variables X and Y in the datafile):
 
  1. How does microbial diversity change with latitude?
  2. How does microbial diversity change with time of year?
@@ -54,7 +54,7 @@ For the report, please use an appropriate analysis to answer the following quest
 
 A particular protein family, luciferase (P08659; [http://www.uniprot.org/uniprot/P08659](http://www.uniprot.org/uniprot/P08659) is responsible for bioluminescence. As part of an RNA-seq project we have sequenced over 900 coding loci from 208 species of plants within the Brassicaceae (a large flowering plant family), and are surprised to discover 30 genes with homology to luciferase, and measure their exprssion levels in each species. We build a phylogenetic tree using the sequences and compute the pairwise genetic distances (averaged number of amino-acid substitutions) between a 31st copy of the 'putative' luciferase gene, in the closely-related, high-quality genome sequence of *Arabidopsis thaliana*, and the copy in each species.
 
-For your report, please use an appropriate analysis to answer the following questions:
+**For your report, please use an appropriate analysis to answer the following questions:**
 
  1. How does the putative 'luciferase' homologue expression change with genetic distance (amino acid substitutions)?
  2. Comment on whether the model assumptions are valid.
@@ -64,7 +64,7 @@ For your report, please use an appropriate analysis to answer the following ques
 
 Populations of the HIV virus are able to evade drug therapy and persist in certain immunoprotected tissues in the body, principally areas of the central nervous system (CNS) where CD4+ T-cells are prevented from entering. An HIV+ patient has enrolled in a study and consented to viral load sampling over 40 weeks in a year. Each week a sample was taken from the brain or spinal cord, and the viral population size ('load', here expressed as log10(number of viral particles per ml)) measured using a chip assay.  Average Shannon population diversity, and mean pairwise genetic distance from individual viruses present in each weekly sample to a reference sequence was assessed using single-copy PCR amplification of the viral Env gene, and we hope to find some relationship between population size, diversity, evolutionary distance and tissue.
 
-The sampling (involing an epidural needle inserted deep into the CNS) is painful and carries a high risk of complications, so we need to make sure we make the most of this data. Do your best to fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure. Write up your results accordingly, with any figures which are appropriate for the research paper we plan to write. Since we're unsure how likely the host immune system is to penetrate the CNS, CD4+ cell counts in the patient's general circulation were assessed using flow cytometry, and categorized as 'low' or 'high' - you may wish to consider these in your analysis. The rows in the data table are in chronological order.
+The sampling (involing an epidural needle inserted deep into the CNS) is painful and carries a high risk of complications, so we need to make sure we make the most of this data. **Do your best to fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure. Write up your results accordingly, with any figures which are appropriate for the research paper we plan to write.** Since we're unsure how likely the host immune system is to penetrate the CNS, CD4+ cell counts in the patient's general circulation were assessed using flow cytometry, and categorized as 'low' or 'high' - you may wish to consider these in your analysis. The rows in the data table are in chronological order.
 
 ## General feedback from previous years.
 
@@ -80,8 +80,7 @@ Other common problems include:
  * Including multiple tests of the same thing (e.g. using a post-hoc test on a fitted
 model, collapsing two factor levels and then comparing models with a partial F-
 test)
- * Carrying out tests for normality on data prior to analysis (I explained in one of the
-lectures why this is a bad idea)
+ * Carrying out tests for normality on data prior to analysis (skipping data exploration/eyeballing and )
  * Mixing p-values and AIC as criteria for model selection - the philosophy behind
 these is very different and you should use one or the other but not both.
  * Giving significance levels for main effects when they are also included in higher-

@@ -136,12 +136,12 @@ $(document).ready(function () {
 <div id="report-format" class="section level2">
 <h2>Report format</h2>
 <p>For each dataset, your writeup should consist of a properly annotated R script that will allow me to exactly replicate your analysis, and the results section of a paper describing your findings (please collate the reports into a single document). <strong>NOTE:</strong> Marks will be deducted for scripts that do not run, while bonus marks (max 5%) are available for scripts submitted as pull requests to the class GitHub.</p>
-<p>The report should be no more than 1000 words (and can be a lot less…) and should not contain any unnecessary figures or tables. If in doubt have a look at some papers in (for example) PLoS Biology or Genome Biology &amp; Evolution to see how it’s done. Please don’t paste output from R directly into your report, by which I mean don’t just paste a summary table or an ANOVA table in (not that you shouldn’t use graphics from R).</p>
+<p>The report should be no more than 1000 words for all three parts (and can be a lot less…) and should not contain any unnecessary figures or tables. The word count excludes code, figure/table legends, and any references you want to include. If in doubt have a look at some papers in (for example) PLoS Biology or Genome Biology &amp; Evolution to see how it’s done. Please don’t paste output from R directly into your report, by which I mean don’t just paste a summary table or an ANOVA table in (not that you shouldn’t use graphics from R).</p>
 </div>
 <div id="dataset-1-marine-microbial-diversity" class="section level2">
 <h2>Dataset 1: Marine microbial diversity</h2>
 <p>In two successive research cruises (January and August), the RRS Discovery survey ship has sampled 20l of seawater from 10 separate locations within approximately equatorial (0-8 degrees N) and equatorial (48-55 degrees N) waters of the North Atlantic (e.g., the Azores and British Isles, respectively). Each sample was filtered with a coarse filter to remove macroinvertebrates, then filtered using a 50uM mesh to collect microbiota. DNA was extracted, WGS sequenced with an Oxford Nanopore MinION, and sequence reads identified using BLASTN. Microbial diversity was assessed using UniFrac, and is expressed relative to a reference sample sequenced at MBL, Plymouth.</p>
-<p>For the report, please use an appropriate analysis to answer the following questions (<strong>Note:</strong> ignore variables X and Y in the datafile):</p>
+<p>For the report, please <strong>use an appropriate analysis to answer the following questions</strong> (<em>Note:</em> ignore variables X and Y in the datafile):</p>
 <ol style="list-style-type: decimal">
 <li>How does microbial diversity change with latitude?</li>
 <li>How does microbial diversity change with time of year?</li>
@@ -151,7 +151,7 @@ $(document).ready(function () {
 <div id="dataset-2-pairwise-nucleotide-substitutions-and-rna-expression-levels" class="section level2">
 <h2>Dataset 2: Pairwise nucleotide substitutions and RNA expression levels</h2>
 <p>A particular protein family, luciferase (P08659; <a href="http://www.uniprot.org/uniprot/P08659" class="uri">http://www.uniprot.org/uniprot/P08659</a> is responsible for bioluminescence. As part of an RNA-seq project we have sequenced over 900 coding loci from 208 species of plants within the Brassicaceae (a large flowering plant family), and are surprised to discover 30 genes with homology to luciferase, and measure their exprssion levels in each species. We build a phylogenetic tree using the sequences and compute the pairwise genetic distances (averaged number of amino-acid substitutions) between a 31st copy of the ‘putative’ luciferase gene, in the closely-related, high-quality genome sequence of <em>Arabidopsis thaliana</em>, and the copy in each species.</p>
-<p>For your report, please use an appropriate analysis to answer the following questions:</p>
+<p><strong>For your report, please use an appropriate analysis to answer the following questions:</strong></p>
 <ol style="list-style-type: decimal">
 <li>How does the putative ‘luciferase’ homologue expression change with genetic distance (amino acid substitutions)?</li>
 <li>Comment on whether the model assumptions are valid.</li>
@@ -161,7 +161,7 @@ $(document).ready(function () {
 <div id="dataset-3-hiv-viral-load-and-within-patient-population-dynamics" class="section level2">
 <h2>Dataset 3: HIV viral load and within-patient population dynamics</h2>
 <p>Populations of the HIV virus are able to evade drug therapy and persist in certain immunoprotected tissues in the body, principally areas of the central nervous system (CNS) where CD4+ T-cells are prevented from entering. An HIV+ patient has enrolled in a study and consented to viral load sampling over 40 weeks in a year. Each week a sample was taken from the brain or spinal cord, and the viral population size (‘load’, here expressed as log10(number of viral particles per ml)) measured using a chip assay. Average Shannon population diversity, and mean pairwise genetic distance from individual viruses present in each weekly sample to a reference sequence was assessed using single-copy PCR amplification of the viral Env gene, and we hope to find some relationship between population size, diversity, evolutionary distance and tissue.</p>
-<p>The sampling (involing an epidural needle inserted deep into the CNS) is painful and carries a high risk of complications, so we need to make sure we make the most of this data. Do your best to fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure. Write up your results accordingly, with any figures which are appropriate for the research paper we plan to write. Since we’re unsure how likely the host immune system is to penetrate the CNS, CD4+ cell counts in the patient’s general circulation were assessed using flow cytometry, and categorized as ‘low’ or ‘high’ - you may wish to consider these in your analysis. The rows in the data table are in chronological order.</p>
+<p>The sampling (involing an epidural needle inserted deep into the CNS) is painful and carries a high risk of complications, so we need to make sure we make the most of this data. <strong>Do your best to fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure. Write up your results accordingly, with any figures which are appropriate for the research paper we plan to write.</strong> Since we’re unsure how likely the host immune system is to penetrate the CNS, CD4+ cell counts in the patient’s general circulation were assessed using flow cytometry, and categorized as ‘low’ or ‘high’ - you may wish to consider these in your analysis. The rows in the data table are in chronological order.</p>
 </div>
 <div id="general-feedback-from-previous-years." class="section level2">
 <h2>General feedback from previous years.</h2>
@@ -172,7 +172,7 @@ $(document).ready(function () {
 <ul>
 <li>Including p-values without test statistics or degrees of freedom</li>
 <li>Including multiple tests of the same thing (e.g. using a post-hoc test on a fitted model, collapsing two factor levels and then comparing models with a partial F- test)</li>
-<li>Carrying out tests for normality on data prior to analysis (I explained in one of the lectures why this is a bad idea)</li>
+<li>Carrying out tests for normality on data prior to analysis (skipping data exploration/eyeballing and )</li>
 <li>Mixing p-values and AIC as criteria for model selection - the philosophy behind these is very different and you should use one or the other but not both.</li>
 <li>Giving significance levels for main effects when they are also included in higher- order interaction terms</li>
 <li>Including graphs showing no effect. There are circumstances when you might want to do this, if you’re reporting a negative result and you think it’s necessary to make a point about how little relationship there is, but in general we wouldn’t put this sort of thing in.</li>
