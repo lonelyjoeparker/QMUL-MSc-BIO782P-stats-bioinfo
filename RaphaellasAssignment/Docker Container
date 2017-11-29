@@ -1,0 +1,5 @@
+Docker Instructions
+
+Docker container for all code available as the following
+
+docker pull crejstar/stats-module:current
