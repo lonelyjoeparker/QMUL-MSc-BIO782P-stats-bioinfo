@@ -1,4 +1,4 @@
-# run code via docker pull by the following tags
+# run code via docker, pull by the following tags
 
 # dataset 1
 rturner92/bio782p:dataset1
