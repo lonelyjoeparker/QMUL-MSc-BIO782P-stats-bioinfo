@@ -1,3 +1,4 @@
+#q1
 #read txt file
 read.table("930_part1.txt", header=TRUE)
 #import file and set name
@@ -25,7 +26,7 @@ stripchart(diversity~season*latitude)
 #anova to see variance analysis
 anova(relation)
 
-#next question
+#q2
 rawinput2=read.table("930_part2.txt", header=TRUE)
 attach(rawinput2)#attach the data to make things simpler
 #use the t test to get a feel for the data
