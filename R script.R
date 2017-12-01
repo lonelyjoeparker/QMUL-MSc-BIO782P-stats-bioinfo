@@ -1,8 +1,8 @@
 #q1
 #read txt file
-read.table("930_part1.txt", header=TRUE)
+read.table("930_part1.tdf", header=TRUE)
 #import file and set name
-rawinput=read.table("930_part1.txt", header=TRUE)
+rawinput=read.table("930_part1.tdf", header=TRUE)
 attach(rawinput)
 #set parameters for graph
 par(mfrow=c(1,1))
@@ -27,7 +27,7 @@ stripchart(diversity~season*latitude)
 anova(relation)
 
 #q2
-rawinput2=read.table("930_part2.txt", header=TRUE)
+rawinput2=read.table("930_part2.tdf", header=TRUE)
 attach(rawinput2)#attach the data to make things simpler
 #use the t test to get a feel for the data
 t.test(expr_units,subst.)
@@ -42,7 +42,7 @@ par(mfrow=c(2,2)
 plot(exprsubs)
 
 #q3
-rawinput3=read.table("930_part3.txt", header=TRUE)
+rawinput3=read.table("930_part3.tdf", header=TRUE)
 attach(rawinput3)
 #conduct a forward and backward stepwise to establish the best model for the HIV results
 model <- lm(rawinput3)
