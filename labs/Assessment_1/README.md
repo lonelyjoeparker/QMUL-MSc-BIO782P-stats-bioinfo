@@ -9,7 +9,7 @@ Having read the description of the way the data were collected, you need to impo
 
 ## Report format
 
-For each dataset, your writeup should consist of a properly annotated R script that will allow me to exactly replicate your analysis, and the results section of a paper describing your findings (please collate the reports into a single document). **NOTE:** Marks will be deducted for scripts that do not run, while bonus marks (max 5%) are available for scripts submitted as pull requests to the class GitHub.
+For each dataset, your writeup should consist of a properly annotated R script that will allow me to exactly replicate your analysis, and the results section of a paper describing your findings (please collate the reports into a single document). **NOTE:** Marks will be deducted for scripts that do not run, while bonus marks (max 5%) are available for scripts submitted as pull requests to the class GitHub. If you want your scripts to be deleted after you've submitted, please [raise a new issue](https://github.com/lonelyjoeparker/QMUL-MSc-BIO782P-stats-bioinfo/issues) to request this.
 
 The report should be no more than 1000 words (and can be a lot less...) and should not contain any unnecessary figures or tables. If in doubt have a look at some papers in (for example) PLoS Biology or Genome Biology & Evolution to see how it's done. Please don’t paste output from R directly into your report, by which I mean don’t just paste a summary table or an ANOVA table in (not that you shouldn’t use graphics from R). 
 
