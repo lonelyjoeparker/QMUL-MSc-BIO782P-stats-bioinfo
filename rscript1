@@ -1,0 +1,26 @@
+#read txt file
+read.table("930_part1.tdf", header=TRUE)
+#import file and set name
+rawinput=read.table("930_part1.tdf", header=TRUE)
+attach(rawinput)
+#set parameters for graph
+par(mfrow=c(1,1))
+#plot diversity in terms of equatorial and temperate locations(non numerical/categorical data must be plotted on x asis)
+plot(lattitude,rawinput$diversity, main="Microbial Diversity by Latitude", xlab="Latitude", ylab="Microbial Diversity") 
+#plot diversity vs time of year
+plot(season,rawinput$diversity, main="Microbial Diversity vs Time of Year", xlab="Time of Year", ylab="Microbial Diversity")
+#check any interaction between season and location
+relation <- lm(diversity ~ season*lattitude)
+#check residuals
+hist(relation$residuals)
+#see summary of relation
+summary(relation)
+#plot graphs to check physical interaction
+par(mfrow=c(1,2))
+plot (diversity~season, col="red")
+plot (diversity~latitude, col="blue")
+title ("Diversity by Season vs Latitude")
+#stripplot to see individual values
+stripchart(diversity~season*latitude)
+#anova to see variance analysis
+anova(relation)
