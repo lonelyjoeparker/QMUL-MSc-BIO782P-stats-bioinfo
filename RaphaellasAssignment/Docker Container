@@ -1,0 +1,9 @@
+Docker Instructions
+
+Docker container including all assignment code available as the following:
+
+docker pull crejstar/stats-module:current
+
+it should be run as the following:
+
+docker run crejstar/stats-module:current
