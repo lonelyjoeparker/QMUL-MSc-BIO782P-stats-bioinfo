@@ -1,0 +1,10 @@
+rawinput3=read.table("930_part3.tdf", header=TRUE)
+attach(rawinput3)
+#conduct a forward and backward stepwise to establish the best model for the HIV results
+model <- lm(rawinput3)
+fwd.model <- step(model, direction='forward')
+bk.model <- step(model, direction='backward')
+#found model, now want to see graphical results 
+plot(viral_load ~ CD4 + Shannon_diversity + Tissue + Distance)
+par(mfrow=c(2,2))
+plot(viral_load ~ CD4 + Shannon_diversity + Tissue + Distance)
