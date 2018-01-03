@@ -1,3 +1,0 @@
-README
-
-1. All R-scripts assume that the data file they use is located in the current working directory, when the R-script is running.
