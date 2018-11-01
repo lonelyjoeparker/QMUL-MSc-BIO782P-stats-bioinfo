@@ -1,7 +1,7 @@
 ---
 title: "BIO782P Introduction to General Linear Models"
 author: "Rob Knell / Joe Parker"
-date: "9 November 2017"
+date: "8 November 2018"
 output:
   pdf_document:
     fig_caption: no

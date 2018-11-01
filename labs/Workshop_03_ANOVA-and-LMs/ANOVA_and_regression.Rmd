@@ -1,11 +1,11 @@
 ---
 title: "BIO782P ANOVA and Regression"
 author: "Rob Knell / Joe Parker"
-date: "8 November 2017"
+date: "7 November 2018"
 output:
+  html_notebook: default
   html_document:
     toc: no
-  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4

@@ -1,11 +1,8 @@
 ---
 title: "Biological models"
 author: "Joe Parker"
-date: "14th November 2017"
+date: "13th November 2018"
 output:
-  html_document:
-    toc: no
-  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -13,6 +10,9 @@ output:
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
+    toc: no
+  html_notebook: default
+  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
