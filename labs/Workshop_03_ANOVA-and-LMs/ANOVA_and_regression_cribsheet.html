@@ -300,7 +300,70 @@ plot(model1) ### Diagnostic plots for model 1</code></pre>
 </ol>
 <p><em>Flies exposed to either a predictably or an unpredictably fluctuating temperature can resist a temperature of 37.5 degrees for roughly 7-8 minutes longer than flies kept in a constant 23 degree treatment.</em></p>
 <p>Manenti, T., Sørensen, J.G., Moghadam, N.N., and Loeschcke, V. (2014). Predictability rather than amplitude of temperature fluctuations determines stress resistance in a natural population of Drosophila simulans. J. Evol. Biol. 27, 2113–2122.</p>
+<hr />
+<div id="update-populating-a-table-of-observed-expected-predicted-or-fitted-values-and-residuals-or-error" class="section level3">
+<h3><strong>Update:</strong> Populating a table of observed, expected (‘predicted’, or ‘fitted’) values and residuals (or ‘error’)</h3>
+<p>Some of you wanted to repeat filling out our table of values as I showed in labs. Here’s how to do it. First let’s look at the basic data:</p>
+<pre class="r"><code>Heatshock &lt;- read.table(&quot;Manenti_heat_shock.txt&quot;, header=TRUE)
+head(Heatshock)</code></pre>
+<pre><code>##   treatment heatshock.time
+## 1         C           32.3
+## 2         C           12.2
+## 3         C           21.8
+## 4         C           40.0
+## 5         C           36.0
+## 6         C           37.0</code></pre>
+<p>Now we can calculate the grand mean (overall mean), treatment means, and from them the total, treatment and error SS for the F-ratio in the ANOVA table:</p>
+<pre class="r"><code># set up a column with the mean for all the data. It will be the same in each row
+Heatshock$grand_mean=mean(Heatshock$heatshock.time)
+
+# calculate the total variance as observed - expected (where 'expected' is the grand mean)
+Heatshock$deviations=Heatshock$heatshock.time-Heatshock$grand_mean
+
+# fit separate means for each treatment; for rows within each treatment this will be the same.
+heatshock.means &lt;- tapply(heatshock.time, treatment, mean)
+
+# set up another column holding the expected value by treatment and fill it (depending on which treatment an observation (row) has been under)
+Heatshock$treatment_means=heatshock.means[1]
+Heatshock$treatment_means[Heatshock$treatment==&quot;F&quot;]=heatshock.means[2]
+Heatshock$treatment_means[Heatshock$treatment==&quot;U&quot;]=heatshock.means[3]
+
+# calculate the proportion of variation explained by the 'treatment' prediction in each observation. This is the good stuff - the useful bit of the model. This is because if we repeated the experiment these are the values we'd expect to see, e.g. if we hatched a new brood of flies and tested them with treatment 'F' etc.
+Heatshock$treatment = Heatshock$treatment_means - Heatshock$grand_mean
+
+# calculte the proportion of variance remaining in each point, *after* treatment means have been fitted. We might call these noise, or residuals. The bigger this term is, the worse, since these are *not* predictive - they are randomly distributed, so could take completely different values if we repeated the experiment.
+Heatshock$error = Heatshock$heatshock.time-Heatshock$treatment_means
+
+# calculate SS for each of the quantities above by squaring each row's value and them summing down the column.
+totalSS = sum(Heatshock$deviates^2)
+treatmentSS = sum(Heatshock$treatment^2)
+totalSS = sum(Heatshock$deviations^2)
+errorSS = sum(Heatshock$error^2)
+
+#see what we've got
+totalSS</code></pre>
+<pre><code>## [1] 98214.16</code></pre>
+<pre class="r"><code>treatmentSS</code></pre>
+<pre><code>## [1] 9267.098</code></pre>
+<pre class="r"><code>errorSS</code></pre>
+<pre><code>## [1] 88947.06</code></pre>
+<pre class="r"><code>head(Heatshock)</code></pre>
+<pre><code>##   treatment heatshock.time grand_mean  deviations treatment_means
+## 1 -5.237837           32.3   36.36857  -4.0685714        31.13073
+## 2 -5.237837           12.2   36.36857 -24.1685714        31.13073
+## 3 -5.237837           21.8   36.36857 -14.5685714        31.13073
+## 4 -5.237837           40.0   36.36857   3.6314286        31.13073
+## 5 -5.237837           36.0   36.36857  -0.3685714        31.13073
+## 6 -5.237837           37.0   36.36857   0.6314286        31.13073
+##        error
+## 1   1.169266
+## 2 -18.930734
+## 3  -9.330734
+## 4   8.869266
+## 5   4.869266
+## 6   5.869266</code></pre>
 <p></p>
+</div>
 </div>
 <div id="regression" class="section level1">
 <h1>Regression</h1>

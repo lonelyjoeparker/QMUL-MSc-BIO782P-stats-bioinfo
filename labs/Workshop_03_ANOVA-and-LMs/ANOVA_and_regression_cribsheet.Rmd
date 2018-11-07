@@ -3,9 +3,6 @@ title: "BIO782P ANOVA and Regression cribsheet"
 author: "Rob Knell / Joe Parker"
 date: "7 November 2018"
 output:
-  html_document:
-    toc: no
-  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -13,6 +10,9 @@ output:
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
+    toc: no
+  html_notebook: default
+  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
@@ -186,6 +186,51 @@ Have a look: does your model have an acceptable fit?
 
 Manenti, T., Sørensen, J.G., Moghadam, N.N., and Loeschcke, V. (2014). Predictability rather than amplitude of temperature fluctuations determines stress resistance in a natural population of Drosophila simulans. J. Evol. Biol. 27, 2113–2122.
 
+***
+###**Update:** Populating a table of observed, expected ('predicted', or 'fitted') values and residuals (or 'error')
+
+Some of you wanted to repeat filling out our table of values as I showed in labs. Here's how to do it. First let's look at the basic data:
+
+```{r}
+Heatshock <- read.table("Manenti_heat_shock.txt", header=TRUE)
+head(Heatshock)
+```
+
+Now we can calculate the grand mean (overall mean), treatment means, and from them the total, treatment and error SS for the F-ratio in the ANOVA table:
+
+```{r}
+# set up a column with the mean for all the data. It will be the same in each row
+Heatshock$grand_mean=mean(Heatshock$heatshock.time)
+
+# calculate the total variance as observed - expected (where 'expected' is the grand mean)
+Heatshock$deviations=Heatshock$heatshock.time-Heatshock$grand_mean
+
+# fit separate means for each treatment; for rows within each treatment this will be the same.
+heatshock.means <- tapply(heatshock.time, treatment, mean)
+
+# set up another column holding the expected value by treatment and fill it (depending on which treatment an observation (row) has been under)
+Heatshock$treatment_means=heatshock.means[1]
+Heatshock$treatment_means[Heatshock$treatment=="F"]=heatshock.means[2]
+Heatshock$treatment_means[Heatshock$treatment=="U"]=heatshock.means[3]
+
+# calculate the proportion of variation explained by the 'treatment' prediction in each observation. This is the good stuff - the useful bit of the model. This is because if we repeated the experiment these are the values we'd expect to see, e.g. if we hatched a new brood of flies and tested them with treatment 'F' etc.
+Heatshock$treatment = Heatshock$treatment_means - Heatshock$grand_mean
+
+# calculte the proportion of variance remaining in each point, *after* treatment means have been fitted. We might call these noise, or residuals. The bigger this term is, the worse, since these are *not* predictive - they are randomly distributed, so could take completely different values if we repeated the experiment.
+Heatshock$error = Heatshock$heatshock.time-Heatshock$treatment_means
+
+# calculate SS for each of the quantities above by squaring each row's value and them summing down the column.
+totalSS = sum(Heatshock$deviates^2)
+treatmentSS = sum(Heatshock$treatment^2)
+totalSS = sum(Heatshock$deviations^2)
+errorSS = sum(Heatshock$error^2)
+
+#see what we've got
+totalSS
+treatmentSS
+errorSS
+head(Heatshock)
+```
 
 ```{r echo=FALSE}
 detach(Heatshock)
