@@ -1,8 +1,11 @@
 ---
 title: "BIO782P ANOVA and Regression cribsheet"
 author: "Rob Knell / Joe Parker"
-date: "8 November 2017"
+date: "7 November 2018"
 output:
+  html_document:
+    toc: no
+  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -10,9 +13,6 @@ output:
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
-    toc: no
-  html_notebook: default
-  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
@@ -198,7 +198,7 @@ detach(Heatshock)
 
 Cope’s rule refers to the tendency of animal body sizes to increase in time with increasing age of the lineage. De Souza and Santucci (2014) tested this using a set of data from the dinosaur clade called the Titanosaurs. This is a group of sauropods that included some of the largest animals known in the history of the Earth (e.g. *Argentinosaurus*) and which were widespread and diverse during the Cretaceous period. Most Titanosaurs are known from only a few bones, and the massive limb bones are particularly common. De Souza and Santucci assembled measurements of limb bones from 46 species of Titanosaur. Measurements of both humerus and femur were available for 20 of these, with 12 being represented only by the humerus and 14 by the femur only. In order to carry out an analysis of how the body size of these animals varied with time, it is necessary to estimate the femur sizes for those animals that are only represented by the humerus, and to do this we can use a linear regression to work out the expected values for each of these missing data points.
 
-1.	Load the dataset called Titanosaurs.txt into R – save it as an object called (for example) Titanosaurs. Use str() to check the structure of the new data frame – there should be a variable called “Taxa” which is the species name, the one called “Mean.time.MA” which is the age of the fossil in millions of years, then “Femur” and “Humerus” which are the lengths of the respective bones in metres.
+1.	Load the dataset called `Titanosaurs.txt` into R – save it as an object called (for example) Titanosaurs. Use str() to check the structure of the new data frame – there should be a variable called “Taxa” which is the species name, the one called “Mean.time.MA” which is the age of the fossil in millions of years, then “Femur” and “Humerus” which are the lengths of the respective bones in metres.
 
 ```{r}
 Titanosaurs <- read.table("Titanosaurs.txt", header=TRUE)

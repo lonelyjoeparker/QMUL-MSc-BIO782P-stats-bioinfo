@@ -3,9 +3,6 @@ title: "BIO782P ANOVA and Regression"
 author: "Rob Knell / Joe Parker"
 date: "7 November 2018"
 output:
-  html_notebook: default
-  html_document:
-    toc: no
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -13,6 +10,9 @@ output:
     keep_tex: no
     latex_engine: xelatex
     number_sections: no
+    toc: no
+  html_notebook: default
+  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
@@ -25,7 +25,7 @@ geometry: a4paper, margin=20mm
 
 Understanding how animals respond in the face of changing temperature is of obvious importance nowadays. One of the important questions that we need to understand is whether unpredictable changes in temperature have different effects from predictable, constant ones. This question was examined by Manenti *et al.* (2014) who described an experiment in which 25 isofemale lines of *Drosophila simulans* were reared in one of three treatments: a constant temperature  (C) of 23\textdegree , a predictably fluctuating temperature (F) which rose to 28\textdegree \enspace  during the day and declined to 13\textdegree \enspace  at night, and an unpredictably fluctuating temperature (U) which rose to a randomly determined value between 23\textdegree \enspace  and 28\textdegree \enspace during the day and fell to a randomly determined value between 23\textdegree \enspace  and 13\textdegree \enspace  at night. A variety of measurements were taken of flies from each treatment.
 
-The file manenti_heatshock.txt contains data for one of these measurements: time to heat knock-down, which is the period for which the flies could withstand a temperature of 37.5\textdegree \enspace  before becoming incapacitated. Each measurement is a mean value from about 10 measurements, each from a separate isofemale line.
+The file `Manenti_heat_shock.txt` contains data for one of these measurements: time to heat knock-down, which is the period for which the flies could withstand a temperature of 37.5\textdegree \enspace   before becoming incapacitated. Each measurement is a mean value from about 10 measurements, each from a separate isofemale line.
 
 
 
@@ -34,22 +34,22 @@ The file manenti_heatshock.txt contains data for one of these measurements: time
 
 2)	Check that the data have been imported properly using the ```str()``` function.  You should have a data frame with two variables: treatment, which indicates the temperature treatment that each group of insects was exposed to, and heatshock.time which is the mean time that insects from a particular line were able to withstand a high temperature for. Treatment should be a factor with three levels, heatshock.time should be a numeric variable.
 
-3)	To get an idea of what your data look like, draw a boxplot with the factor levels on the x-axis and longevity on the y-axis. NB to refer to the variables within the data frame you’ll either need to attach the data frame or refer to them using the name of the data frame and then the name of the variable with a dollar sign between them, e.g. Heatshock$treatment.
+3)	To get an idea of what your data look like, draw a boxplot with the factor levels on the x-axis and longevity on the y-axis. NB to refer to the variables within the data frame you’ll either need to attach the data frame or refer to them using the name of the data frame and then the name of the variable with a dollar sign between them, e.g. `Heatshock$treatment`.
 
 
 4)	What do you see? Is there anything that might make an ANOVA unsuitable for analysing these data as they are?
 
 5)	We're going to carry out an ANOVA on these data in three ways: by calculating it, by using the ```aov()``` function and by using the ```lm()``` function. Let's start by doing it the hard way, by hand. 
 
-  Firstly you need to calculate the total sums of squares for heatshock.time. Remember that this is calculated as each number in the vector, minus the overall mean value for the vector and squared. Make sure you square the numbers before you sum them: the sum of the squared differences is not the same as the sum of the differences, squared. Set up an object called SStotal to store this number in.
+  Firstly you need to calculate the total sums of squares for heatshock.time. Remember that this is calculated as each number in the vector, minus the overall mean value for the vector and squared. Make sure you square the numbers before you sum them: the sum of the squared differences is not the same as the sum of the differences, squared. Set up an object called `SStotal` to store this number in.
 
   Now calculate it a different way using the ```var()``` function and multiplying the variance by the degrees of freedom. The two numbers should be the same.
 
   Now to calculate the error sums of squares. This is the residual variance left after the effect of the factor (in this case the temperature treatment) has been removed. You need to start by calculating the mean value for heatshock.time for each of the three factor levels: the easy way to do this is by using the ```tapply()``` function. Look up the help file and try to get it to work, and once you're there store the output as another object.
 
-  Once you have the means for each factor level then you can calculate the error sum of squares by working out the sum of the squared deviations from the factor mean for each factor level, and adding the sums of squares for each factor level together. Store this value as an object called SSerror. 
+  Once you have the means for each factor level then you can calculate the error sum of squares by working out the sum of the squared deviations from the factor mean for each factor level, and adding the sums of squares for each factor level together. Store this value as an object called `SSerror`. 
 
-  What about the treatment sum of squares? Well, the total sums of squares is equal to the error sum of squares plus the treatment sums of squares, so we can work this last value out by subtracting SSerror from SStotal.
+  What about the treatment sum of squares? Well, the total sums of squares is equal to the error sum of squares plus the treatment sums of squares, so we can work this last value out by subtracting `SSerror` from `SStotal`.
 
   Having calculated these values we can fill in an ANOVA table.
 
@@ -94,7 +94,7 @@ df2=17
 
 9)	 What do you conclude? 
 
-Manenti, T., Sørensen, J.G., Moghadam, N.N., and Loeschcke, V. (2014). Predictability rather than amplitude of temperature fluctuations determines stress resistance in a natural population of *Drosophila simulans*. J. Evol. Biol. 27, 2113–2122.
+Manenti, T., Sørensen, J.G., Moghadam, N.N., and Loeschcke, V. (2014). Predictability rather than amplitude of temperature fluctuations determines stress resistance in a natural population of *Drosophila simulans. J. Evol. Biol.* **27**:2113–2122.
 
 
 
@@ -143,4 +143,4 @@ model3 <- lm(Femur~Humerus + I(Humerus^2))
 
 
 
-De Souza, L.M., and Santucci, R.M. (2014). Body size evolution in Titanosauriformes (Sauropoda, Macronaria). J. Evol. Biol. 27, 2001–2012.
+De Souza, L.M., and Santucci, R.M. (2014). Body size evolution in Titanosauriformes (Sauropoda, Macronaria). *J. Evol. Biol.* **27**:2001–2012.
