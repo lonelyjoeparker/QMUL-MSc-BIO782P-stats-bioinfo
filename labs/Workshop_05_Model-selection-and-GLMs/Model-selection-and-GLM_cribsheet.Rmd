@@ -1,11 +1,8 @@
 ---
 title: "Model selection in GLMs"
 author: "Joe Parker"
-date: "10th November 2017"
+date: "9th November 2018"
 output:
-  html_notebook: default
-  html_document:
-    toc: no
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -14,8 +11,12 @@ output:
     latex_engine: xelatex
     number_sections: no
     toc: no
-monofont: Monaco
-mainfont: Helvetica Light
+  html_document:
+    toc: no
+  html_notebook: default
+#monofont: Courier
+#monofont: Monaco
+#mainfont: Helvetica Light
 subparagraph: yes
 geometry: a4paper, margin=20mm
 ---

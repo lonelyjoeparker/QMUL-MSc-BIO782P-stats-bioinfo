@@ -3,6 +3,8 @@ title: "Model selection in GLMs"
 author: "Joe Parker"
 date: "9th November 2018"
 output:
+  html_document:
+    toc: no
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -12,8 +14,6 @@ output:
     number_sections: no
     toc: no
   html_notebook: default
-  html_document:
-    toc: no
 monofont: Monaco
 mainfont: Helvetica Light
 subparagraph: yes
