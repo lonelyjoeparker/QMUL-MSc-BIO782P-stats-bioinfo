@@ -1,9 +1,11 @@
-# BIO782P Statistics and Bioinformatics Assignment 2017
+# BIO782P Statistics and Bioinformatics Assignment 2018 (1 of 2)
 
-## Due: 17:00 Friday 1 December 2017
+## Due: 17:00 Friday 14 December 2018
 
 ## Introduction
-You have been allocated two unique datasets. To find yours, look at the table at the end of this document. Once you know the numbers of the datasets to use look in the folder called [`Student_data` (see class GitHub](https://github.com/lonelyjoeparker/QMUL-MSc-BIO782P-stats-bioinfo)). If your UID listed below is (for example) 17, then you should look in folder `Student_data/17` for input files `17_part1.tdf`, `17_part2.tdf` and `17_part3.tdf`. All datasets are supplied as tab-delimited text files. 
+The second assessment mainly refers to material covered in the second week of the course. There are three parts, analyses for datasets **1**, **2** and **3**. These will test your code comprehension and big-data analysis skills. Bonuses are available. See the .html or .pdf in this directory for details.
+
+You have been allocated three unique datasets. To find yours, look at the table at the end of this document. Once you know the numbers of the datasets to use look in the folder called [`Student_data` (see class GitHub](https://github.com/lonelyjoeparker/QMUL-MSc-BIO782P-stats-bioinfo)). If your UID listed below is (for example) 17, then you should look in folder `Student_data/17` for input files `17_part1.tdf`, `17_part2.tdf` and `17_part3.tdf`. All datasets are supplied as tab-delimited text files.
 
 Having read the description of the way the data were collected, you need to import each dataset into R. Remember to check the datasets when you import them for things like proper allocation of each variable as a factor or a numeric variable etc, and to carry out proper exploratory data analysis. Once you're happy that you've got the data into a condition where it can be analysed, fit a model and use that to try to answer the questions given below. Don't forget to check the model assumptions!
 
@@ -11,7 +13,7 @@ Having read the description of the way the data were collected, you need to impo
 
 For each dataset, your writeup should consist of a properly annotated R script that will allow me to exactly replicate your analysis, and the results section of a paper describing your findings (please collate the reports into a single document). **NOTE:** Marks will be deducted for scripts that do not run, while bonus marks (max 5%) are available for scripts submitted as pull requests to the class GitHub. If you want your scripts to be deleted after you've submitted, please [raise a new issue](https://github.com/lonelyjoeparker/QMUL-MSc-BIO782P-stats-bioinfo/issues) to request this.
 
-The report should be no more than 1000 words (and can be a lot less...) and should not contain any unnecessary figures or tables. If in doubt have a look at some papers in (for example) PLoS Biology or Genome Biology & Evolution to see how it's done. Please don’t paste output from R directly into your report, by which I mean don’t just paste a summary table or an ANOVA table in (not that you shouldn’t use graphics from R). 
+The report should be no more than 1000 words (and can be a lot less...) and should not contain any unnecessary figures or tables. If in doubt have a look at some papers in (for example) PLoS Biology or Genome Biology & Evolution to see how it's done. Please don’t paste output from R directly into your report, by which I mean don’t just paste a summary table or an ANOVA table in (not that you shouldn’t use graphics from R).
 
 ## Dataset 1: Marine microbial diversity
 
@@ -90,4 +92,3 @@ to do this, if you’re reporting a negative result and you think it’s necessa
 | student_322 | Turner |
 | student_909 | Zafar |
 | student_918 | (spare) |
-
