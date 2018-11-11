@@ -1,15 +1,20 @@
 ---
-title: 'BIO782P Assessment 2 #v2-corrected'
+title: 'BIO782P Assessment 2'
 author: "Joe Parker"
-date: "21/11/2017"
+date: "11/11/2018"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+
+# BIO782P Statistics and Bioinformatics Assignment 2018 (2 of 2)
+
+## Due: 17:00 Friday 14 December 2018
 
 ## Part A
 
