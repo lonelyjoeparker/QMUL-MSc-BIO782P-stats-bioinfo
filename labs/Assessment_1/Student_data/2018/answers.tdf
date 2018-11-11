@@ -1,0 +1,27 @@
+"Surname"	"Forename"	"UID"	"d1_eff_latt"	"d1_eff_seas"	"d1_eff_intr"	"d2_eff_a"	"d2_eff_b"	"d3_eff_CD4"	"d3_eff_shannon"	"d3_eff_distance"	"d3_eff_tissue"
+"ADENIJI"	"JAMES"	1215	-1	1	-1	-1	-1	0	1	1	-1
+"ALTAMIMI"	"FATMA"	1352	-1	-1	1	1	1	1	0	0	1
+"ANDREWS"	"CONNOR"	1493	0	0	-1	-1	-1	1	-1	-1	-1
+"BASHIR"	"MAHMUDA"	1311	0	-1	-1	0	0	-1	-1	1	0
+"BURNS"	"RICHARD"	1221	1	1	-1	1	-1	-1	1	-1	1
+"GREDECKA"	"JUSTYNA"	1280	1	1	-1	-1	0	1	0	0	-1
+"GUNDOGDU"	"OZAN"	1391	1	1	-1	1	1	1	-1	0	-1
+"KNIGHT"	"CONNOR"	1712	1	-1	-1	1	0	0	0	0	0
+"LIM"	"WEE"	1773	1	0	1	1	1	0	1	-1	1
+"LIU"	"JINGWEN"	1204	0	0	-1	-1	1	-1	1	1	1
+"MAGDA"	"ILDIKO"	1062	0	-1	1	1	-1	0	0	0	1
+"MENSAH"	"BRYAN"	1864	-1	-1	-1	-1	-1	1	-1	1	-1
+"MENSAH-KANE"	"JOSEPHINE"	1725	0	0	-1	-1	0	1	0	0	-1
+"MOUGAMADOU"	"ISHACK"	1887	0	0	1	1	-1	0	1	-1	-1
+"NEL"	"LYDIA"	1714	0	0	1	1	1	1	-1	-1	-1
+"OKUBOYEJO"	"CATHERINE"	1608	1	1	1	-1	1	0	0	1	1
+"PAPADAKI"	"ARTEMIS"	1391	-1	-1	1	-1	-1	0	0	-1	0
+"PENEDOS"	"ANA"	1932	-1	-1	-1	0	0	-1	0	-1	-1
+"PIENIAK"	"IWO"	1063	-1	1	-1	-1	-1	-1	1	1	1
+"QI"	"MUYAO"	1115	0	1	-1	0	1	-1	-1	-1	0
+"SAIHI"	"HAJAR"	1210	1	0	-1	1	-1	1	-1	-1	0
+"SHARMA"	"ARUSHI"	1460	-1	-1	-1	0	0	0	0	-1	0
+"THAWONG"	"PENPITCHA"	1206	-1	0	-1	-1	-1	1	0	1	0
+"VAN GREUNE"	"CORNELUIS"	1840	0	-1	-1	0	-1	-1	1	-1	1
+"ZAFAR"	"FRIHA"	1068	0	-1	-1	-1	0	1	0	1	1
+"ZHU"	"MINLI"	1812	0	-1	-1	0	0	1	0	-1	-1
