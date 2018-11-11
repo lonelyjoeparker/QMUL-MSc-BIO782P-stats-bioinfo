@@ -70,8 +70,38 @@ to do this, if you’re reporting a negative result and you think it’s necessa
 
 ## Student names and datasets:
 
-| student_UID | Surname |
-| ----------- | ------- |
+| surname | name | UID |
+| ----------- | ------- | --- |
+Surname | Forename | UID
+ADENIJI | JAMES | 1215
+ALTAMIMI | FATMA | 1352
+ANDREWS | CONNOR | 1493
+BASHIR | MAHMUDA | 1311
+BURNS | RICHARD | 1221
+GREDECKA | JUSTYNA | 1280
+GUNDOGDU | OZAN | 1391
+KNIGHT | CONNOR | 1712
+LIM | WEE | 1773
+LIU | JINGWEN | 1204
+MAGDA | ILDIKO | 1062
+MENSAH | BRYAN | 1864
+MENSAH-KANE | JOSEPHINE | 1725
+MOUGAMADOU | ISHACK | 1887
+NEL | LYDIA | 1714
+OKUBOYEJO | CATHERINE | 1608
+PAPADAKI | ARTEMIS | 1391
+PENEDOS | ANA | 1932
+PIENIAK | IWO | 1063
+QI | MUYAO | 1115
+SAIHI | HAJAR | 1210
+SHARMA | ARUSHI | 1460
+THAWONG | PENPITCHA | 1206
+VAN GREUNE | CORNELUIS | 1840
+ZAFAR | FRIHA | 1068
+ZHU | MINLI | 1812
+
+
+<!--
 | student_993 | Akkari |
 | student_190 | Baskan |
 | student_75 | Chowdhury |
@@ -92,3 +122,4 @@ to do this, if you’re reporting a negative result and you think it’s necessa
 | student_322 | Turner |
 | student_909 | Zafar |
 | student_918 | (spare) |
+-->
