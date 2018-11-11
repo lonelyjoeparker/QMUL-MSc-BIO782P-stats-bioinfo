@@ -3,7 +3,7 @@
 ## Due: 17:00 Friday 14 December 2018
 
 ## Introduction
-The second assessment mainly refers to material covered in the second week of the course. There are three parts, analyses for datasets **1**, **2** and **3**. These will test your code comprehension and big-data analysis skills. Bonuses are available. See the .html or .pdf in this directory for details.
+The second assessment mainly refers to material covered in the first week of the course. There are three parts, analyses for datasets **1**, **2** and **3**. These will test your code comprehension and big-data analysis skills. Bonuses are available. See the .html or .pdf in this directory for details.
 
 You have been allocated three unique datasets. To find yours, look at the table at the end of this document. Once you know the numbers of the datasets to use look in the folder called [`Student_data` (see class GitHub](https://github.com/lonelyjoeparker/QMUL-MSc-BIO782P-stats-bioinfo)). If your UID listed below is (for example) 17, then you should look in folder `Student_data/17` for input files `17_part1.tdf`, `17_part2.tdf` and `17_part3.tdf`. All datasets are supplied as tab-delimited text files.
 
