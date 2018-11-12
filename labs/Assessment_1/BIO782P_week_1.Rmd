@@ -3,11 +3,11 @@ title: "BIO782P - Week 1 Assessment"
 author: "Joe Parker"
 date: "11th November 2018"
 output:
-  html_document:
-    toc: no
+  html_notebook: default
    # latex_engine: xelatex
     number_sections: no
-  html_notebook: default
+  html_document:
+    toc: no
   pdf_document:
     fig_caption: no
     fig_height: 4
@@ -42,7 +42,7 @@ The report should be no more than 1000 words for all three parts (and can be a l
 
 ## Dataset 1: Marine microbial diversity
 
-In two successive research cruises (January and August), the RRS Discovery survey ship has sampled 20l of seawater from 10 separate locations within approximately equatorial (0-8 degrees N) and equatorial (48-55 degrees N) waters of the North Atlantic (e.g., the Azores and British Isles, respectively). Each sample was filtered with a coarse filter to remove macroinvertebrates, then filtered using a 50uM mesh to collect microbiota. DNA was extracted, WGS sequenced with an Oxford Nanopore MinION, and sequence reads identified using BLASTN. Microbial diversity was assessed using UniFrac, and is expressed relative to a reference sample sequenced at MBL, Plymouth.
+In two successive research cruises (January and August), the RRS Discovery survey ship has sampled 20l of seawater from 10 separate locations within approximately equatorial (0-8 degrees N) and temperate (48-55 degrees N) waters of the North Atlantic (e.g., the Azores and British Isles, respectively). Each sample was filtered with a coarse filter to remove macroinvertebrates, then filtered using a 50uM mesh to collect microbiota. DNA was extracted, WGS sequenced with an Oxford Nanopore MinION, and sequence reads identified using BLASTN. Microbial diversity was assessed using UniFrac, and is expressed relative to a reference sample sequenced at MBL, Plymouth.
 
 For the report, please **use an appropriate analysis to answer the following questions** (*Note:* ignore variables X and Y in the datafile):
 
@@ -98,26 +98,31 @@ to do this, if you’re reporting a negative result and you think it’s necessa
 
 ## Student names and datasets:
 
-| student_UID | Surname |
-| ----------- | ------- |
-| student_993 | Akkari |
-| student_190 | Baskan |
-| student_75 | Chowdhury |
-| student_403 | Gomez |
-| student_322 | Grant |
-| student_137 | Grigoriadis |
-| student_273 | Jackson |
-| student_572 | Kale |
-| student_3 | Khan |
-| student_235 | Matthews |
-| student_596 | Miller |
-| student_101 | Nicholson |
-| student_61 | Owosu |
-| student_611 | Patel |
-| student_930 | Pink |
-| student_896 | Selvachandrarajah |
-| student_897 | Soormally |
-| student_322 | Turner |
-| student_909 | Zafar |
-| student_918 | (spare) |
-
+Surname | Forename | UID
+------- | -------- | ---
+ADENIJI | JAMES | 1215
+ALTAMIMI | FATMA | 1352
+ANDREWS | CONNOR | 1493
+BASHIR | MAHMUDA | 1311
+BURNS | RICHARD | 1221
+GREDECKA | JUSTYNA | 1280
+GUNDOGDU | OZAN | 1391
+KNIGHT | CONNOR | 1712
+LIM | WEE | 1773
+LIU | JINGWEN | 1204
+MAGDA | ILDIKO | 1062
+MENSAH | BRYAN | 1864
+MENSAH-KANE | JOSEPHINE | 1725
+MOUGAMADOU | ISHACK | 1887
+NEL | LYDIA | 1714
+OKUBOYEJO | CATHERINE | 1608
+PAPADAKI | ARTEMIS | 1391
+PENEDOS | ANA | 1932
+PIENIAK | IWO | 1063
+QI | MUYAO | 1115
+SAIHI | HAJAR | 1210
+SHARMA | ARUSHI | 1460
+THAWONG | PENPITCHA | 1206
+VAN GREUNE | CORNELUIS | 1840
+ZAFAR | FRIHA | 1068
+ZHU | MINLI | 1812
