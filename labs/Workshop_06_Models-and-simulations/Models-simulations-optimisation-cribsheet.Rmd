@@ -1,18 +1,17 @@
 ---
 title: "Developing models, simulations, and optimisation"
 author: "Joe Parker"
-date: "13th November 2017"
+date: "12th November 2018"
 output:
+  html_document:
+    toc: no
+  html_notebook: default
   pdf_document:
     fig_caption: no
     fig_height: 4
     fig_width: 5
     keep_tex: no
-    latex_engine: xelatex
     number_sections: no
-    toc: no
-  html_notebook: default
-  html_document:
     toc: no
 monofont: Monaco
 mainfont: Helvetica Light
