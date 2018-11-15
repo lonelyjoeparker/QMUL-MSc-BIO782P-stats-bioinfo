@@ -1,0 +1,29 @@
+#!/bin/sh
+
+RAXMLDIR="$(dirname -- "$(readlink -f -- "$0")")"
+NPROCESSOR=`grep -c 'processor[[:space:]:]\+[0-9]\+' /proc/cpuinfo`
+NCPUS=`grep '^cpu cores' /proc/cpuinfo | head -n 1 | sed 's/cpu cores[[:space:]:]\+//'`
+# That's wrong and lasts way longer than when using NCPUS
+# AVX_T=$((NPROCESSOR * NCPUS))
+AVX_T=$NCPUS
+
+if grep -q avx /proc/cpuinfo; then
+    if echo "$@" | grep -q -- '-T[[:space:]]*[0-9]' ; then
+        echo "Use raxml with AVX support with overriden number of threads"
+        ${RAXMLDIR}/raxmlHPC-PTHREADS-AVX "$@"
+    else
+        echo "Use raxml with AVX support ($AVX_T cpus)"
+        ${RAXMLDIR}/raxmlHPC-PTHREADS-AVX -T $AVX_T "$@"
+    fi
+elif grep -q sse3 /proc/cpuinfo; then
+    if echo "$@" | grep -q -- '-T[[:space:]]*[0-9]' ; then
+        echo "Use raxml with SSE3 support with overriden number of threads"
+        ${RAXMLDIR}/raxmlHPC-PTHREADS-SSE3 "$@"
+    else
+        echo "Use raxml with SSE3 support ($AVX_T cpus)"
+        ${RAXMLDIR}/raxmlHPC-PTHREADS-SSE3 -T $AVX_T "$@"
+    fi
+else
+    echo "Use raxml with PTHREADS support"
+    ${RAXMLDIR}/raxmlHPC-PTHREADS "$@"
+fi
