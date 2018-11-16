@@ -56,7 +56,7 @@ You should be able to run these on singularity (**from within the appropriate di
 
 ```
 # cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/simple_docker_containers/simply_print
-singularity run -B  /data/home/<username>:/custom_data  <some input file which exists already> <some output file to create> ./phylodev-simple_container.simg 
+singularity run ./phylodev-simple_container.simg 
 
 # cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/simple_docker_containers/simple_echo
 singularity run ./phylodev-reverser.simg arg_one_foo arg_two_bar
