@@ -76,3 +76,7 @@ More general form for the RAxML executable container:
 ```
 singularity run -B  /data1/SBCS-MSc-BioInf/<some_valid_directory_containing_input_file>:/custom_data phylodev-raxml_container_executable.simg /custom_data/<input_file> <model> <replicates> <seed> <filename>
 ```
+
+## Sample alignments for input files
+
+See `sample_alignments.zip`. Unzip them, pick a gene, and infer a tree using RAxML.
