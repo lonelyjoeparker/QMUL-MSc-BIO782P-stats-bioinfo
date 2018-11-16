@@ -1,6 +1,6 @@
 # Summary
 
-This directory contains several directories. Each contains at least one Dockerfile, which is used to build a single Docker container. You can try these out for yourself.
+This directory contains several directories. Each contains at least one Dockerfile, which is used to build a single Docker container. You can try these out for yourself. You can also see them on the Docker Hub at https://hub.docker.com/r/lonelyjoeparker/phylodev/tags/
 
 ## An extremely simple container:
 
@@ -39,3 +39,40 @@ sudo docker run reverser_container foo bar
 ```
 
 ## A fairly complicated script which uses head to print the first few lines of an input argument to an output file
+
+See `./directory_binder`.
+
+## A vanilla RAxML version which just prints version info
+
+See `./raxml_simple_container`.
+
+## A RAxML version which runs `-N` separate starting trees
+
+See `./raxml_executable_container`.
+
+# Running these on singularity
+
+You should be able to run these on singularity (**from within the appropriate directories...**) with `singularity run <container_image>` e.g.
+
+```
+# cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/simple_docker_containers/simply_print
+singularity run -B  /data/home/<username>:/custom_data  <some input file which exists already> <some output file to create> ./phylodev-simple_container.simg 
+
+# cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/simple_docker_containers/simple_echo
+singularity run ./phylodev-reverser.simg arg_one_foo arg_two_bar
+
+# cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/simple_docker_containers/directory_binder
+singularity run -B  /data/home/<username>:/custom_data  <some input file which exists already> <some output file to create> ./phylodev-binder.simg <input_file> <output_file>
+
+# cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/simple_docker_containers/raxml_simple_container
+singularity run phylodev-raxml_container_simple.simg
+
+# cd /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_09_Big-data/simple_docker_containers/raxml_executable_container
+singularity run -B  /data1/SBCS-MSc-BioInf/2017-BIO782P/QMUL-MSc-BIO782P-stats-bioinfo/labs/Workshop_07_Beyond-GLMs:/custom_data phylodev-raxml_container_executable.simg /custom_data/mc.paml GTRCAT 1 2 testrax
+```
+
+More general form for the RAxML executable container:
+
+```
+singularity run -B  /data1/SBCS-MSc-BioInf/<some_valid_directory_containing_input_file>:/custom_data phylodev-raxml_container_executable.simg /custom_data/<input_file> <model> <replicates> <seed> <filename>
+```
