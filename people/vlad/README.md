@@ -4,4 +4,4 @@ Vlad
 
 ## Description
 
-has smelly toes 
+has nice toes 
