@@ -1,6 +1,6 @@
 # name
 
-Josie! xxx
+Josie! :)
 
 ## Description
 
