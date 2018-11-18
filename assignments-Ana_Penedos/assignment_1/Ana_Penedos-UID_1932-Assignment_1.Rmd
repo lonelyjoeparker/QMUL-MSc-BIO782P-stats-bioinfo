@@ -1,0 +1,147 @@
+---
+title: "BIO782P - Week 1 Assignment"
+author: "Ana Penedos (UID 1932)"
+date: "14th December 2018"
+output:
+  html_notebook: default
+   # latex_engine: xelatex
+    number_sections: no
+  html_document:
+    toc: no
+  pdf_document:
+    fig_caption: no
+    fig_height: 4
+    fig_width: 5
+    keep_tex: no
+#monofont: Monaco, FreeMono
+monofont: FreeMono
+#mainfont: Helvetica Light, Helvetica
+mainfont: Helvetica
+subparagraph: yes
+geometry: a4paper, margin=20mm
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Marine microbial diversity (dataset 1)
+
+* 2 cruises: Jan and Aug
+* sampled 20l of seawater
+* 10 separate locations 
+* equatorial (0-8 degrees N) and temperate (48-55 degrees N) waters
+* samples were filtered to enrich the microbiome
+* DNA extracted, WGS sequenced, and sequence reads identified using BLASTN
+* Microbial diversity assessed using UniFrac, expressed relative to reference
+
+## Data imported
+```{r}
+marine <- read.table("../../labs/Assessment_1/Student_data/2018/part_1_student_1932.tdf", 
+                     sep = "\t",
+                     header = TRUE)
+head(marine) # check if there are obvious issues with data import
+names(marine) # get the names of data frame variables
+str(marine) # check number of observations, variables and their type
+```
+
+season and latitude are factors with two levels each, matching the described experiment.
+
+## 1. How does microbial diversity change with latitude?
+```{r}
+library(ggplot2)
+# ggplot object representing a continuous variable against a factor
+marine.violin.plot <- ggplot(marine,
+                             aes(factor(marine$latitude), 
+                                 marine$UniFracInd,
+                                 fill = marine$latitude)) +
+  # create a violin plot with count on  the y axis and including outliers
+  geom_violin(scale = "count",
+              trim = FALSE) + 
+  # add the sample points
+#  geom_jitter(height = 0, width = 0.2) +
+  # add the boxplot
+  geom_boxplot(width = 0.1,
+               fill = "white") +
+  # add the mean of values
+  stat_summary(fun.y = mean, 
+               geom = "point", 
+               shape = 23, 
+               size = 2,
+               fill = "red") +
+  # edit plot and axes titles and change colour depending on the factor
+  labs(title = "Microbial Density vs. Latitude",
+       x = "Latitude",
+       y = "UniFracInd",
+       fill = "Latitude") +
+  # change fill fro the default colours
+  scale_fill_manual(values=c("#0099FF", "#009999")) +
+  # change the plot theme to classic (no grey plot area or gridlines)
+  theme_classic()
+# set variable for the style of plot titles; 
+# hjust is the horizontal position of the title
+plot.titles <- element_text(face = "bold.italic",
+                            size = 12,
+                            hjust = .5)
+# set variable for the style of plot axes
+plot.axes.labels <- element_text(face = "bold",
+                            size = 10)
+# apply title and axes format to the plot theme and remove legend
+marine.violin.plot + theme(plot.title = plot.titles,
+                           axis.title = plot.axes.labels,
+                           legend.position="none")
+```
+The violin plot shows that although the median of UniFracInd is identical between samples taken in equatorial waters and those obtained in tropical waters, the distribution of sample microbiological diversity is different in each type of environment. While in temperate waters, the samples with a UniFracInd above the median tend to aggregate close to the median value, with the remaining values more spread below the mid point's value, in tropical waters this trend is reversed, with the samples with higher diversity than the median value more spread and those with lower than median diversity showing UniFracInd values closer to the median value. This is illustrated by the fact that the means of each type of sample (red losanges) difer by a larger margin than the medians, with samples collected in temperate waters showing a lower mean of microbial diversity index (UniFracInd) than those from tropical waters.
+
+## 2. How does microbial diversity change with time of year?
+```{r}
+
+```
+
+ 3. Is there an interaction between the season, and location?
+
+
+## Dataset 2: Pairwise nucleotide substitutions and RNA expression levels
+
+A particular protein family, luciferase (P08659; [http://www.uniprot.org/uniprot/P08659](http://www.uniprot.org/uniprot/P08659) is responsible for bioluminescence. As part of an RNA-seq project we have sequenced over 900 coding loci from 208 species of plants within the Brassicaceae (a large flowering plant family), and are surprised to discover 30 genes with homology to luciferase, and measure their exprssion levels in each species. We build a phylogenetic tree using the sequences and compute the pairwise genetic distances (averaged number of amino-acid substitutions) between a 31st copy of the 'putative' luciferase gene, in the closely-related, high-quality genome sequence of *Arabidopsis thaliana*, and the copy in each species.
+
+**For your report, please use an appropriate analysis to answer the following questions:**
+
+ 1. How does the putative 'luciferase' homologue expression change with genetic distance (amino acid substitutions)?
+ 2. Comment on whether the model assumptions are valid.
+ 3. Assuming your model is *statistically* valid, can you guess what effect is responsible for the relationship you've found?
+
+## Dataset 3: HIV viral load and within-patient population dynamics
+
+Populations of the HIV virus are able to evade drug therapy and persist in certain immunoprotected tissues in the body, principally areas of the central nervous system (CNS) where CD4+ T-cells are prevented from entering. An HIV+ patient has enrolled in a study and consented to viral load sampling over 40 weeks in a year. Each week a sample was taken from the brain or spinal cord, and the viral population size ('load', here expressed as log10(number of viral particles per ml)) measured using a chip assay.  Average Shannon population diversity, and mean pairwise genetic distance from individual viruses present in each weekly sample to a reference sequence was assessed using single-copy PCR amplification of the viral Env gene, and we hope to find some relationship between population size, diversity, evolutionary distance and tissue.
+
+The sampling (involing an epidural needle inserted deep into the CNS) is painful and carries a high risk of complications, so we need to make sure we make the most of this data. **Do your best to fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure. Write up your results accordingly, with any figures which are appropriate for the research paper we plan to write.** Since we're unsure how likely the host immune system is to penetrate the CNS, CD4+ cell counts in the patient's general circulation were assessed using flow cytometry, and categorized as 'low' or 'high' - you may wish to consider these in your analysis. The rows in the data table are in chronological order.
+
+## General feedback from previous years.
+
+Overall, we have been impressed with the standard of previous reports. Most of you manage to get the analyses more or less right, and most of you produce good- quality scripts. None of them had too much annotation - remember that when you’re annotating a script you’re really writing a guide to yourself describing what it does. Think about the information that might be useful if you come back to the analysis a year or two in the future.
+
+Regarding the "results section" of the reports, these are a lot more variable. Many of you put too much analysis into these, and in particular include material that would not normally go in a journal results section. Preliminary and exploratory analysis, diagnostic plots and the like are not generally included in journal results sections. Many of you have redundant graphs – you shouldn’t show the reader the same set of data twice. A common problem is too much focus on the statistics and not enough on what the statistical results mean in terms of the biology of the system, or in terms of effect sizes: don’t just tell me that there’s an effect, tell me how big the effect is, and put it in meaningful biological terms.
+
+Figure captions are something that most of you need to work on. When you’re writing a figure caption, it’s a good idea to try to write it so that a casual reader who is skimming through the paper can look at the figure, have a look at the caption and have at least a rough idea about what the figure is showing. That doesn’t mean that each figure should have the whole methods section reproduced, but you can include a sentence or two that gives the casual reader a basic idea of what’s going on.
+
+Other common problems include:
+
+ * Including p-values without test statistics or degrees of freedom
+ * Including multiple tests of the same thing (e.g. using a post-hoc test on a fitted
+model, collapsing two factor levels and then comparing models with a partial F-
+test)
+ * Carrying out tests for normality on data prior to analysis (skipping data exploration/eyeballing and )
+ * Mixing p-values and AIC as criteria for model selection - the philosophy behind
+these is very different and you should use one or the other but not both.
+ * Giving significance levels for main effects when they are also included in higher-
+order interaction terms
+ * Including graphs showing no effect. There are circumstances when you might want
+to do this, if you’re reporting a negative result and you think it’s necessary to make a point about how little relationship there is, but in general we wouldn’t put this sort of thing in.
+ * Including code, function names etc. from R. Results sections from journals wouldn’t usually include this kind of material unless you’re describing an esoteric analysis that the readers will not be familiar with, in which case you might say “We fitted a generalised additive model to the data using the gam() function as implemented in the mcgv package (Wood 2014)” but usually you would just tell the reader the type of analysis used.
+ * Referring to “non-significant” results as “insignificant”. Don’t do this - have a think about why.
+ * No references! Not a single person put a reference in their results section.
+
+\pagebreak 
