@@ -52,52 +52,70 @@ season and latitude are factors with two levels each, matching the described exp
 ## 1. How does microbial diversity change with latitude?
 ```{r}
 library(ggplot2)
-# ggplot object representing a continuous variable against a factor
-marine.violin.plot <- ggplot(marine,
+# set up plot-specific elements
+# ggplot object plotting UniFracInd against latitude
+marine.latitude.plot <- ggplot(marine,
                              aes(factor(marine$latitude), 
                                  marine$UniFracInd,
-                                 fill = marine$latitude)) +
-  # create a violin plot with count on  the y axis and including outliers
-  geom_violin(scale = "count",
-              trim = FALSE) + 
-  # add the sample points
-#  geom_jitter(height = 0, width = 0.2) +
-  # add the boxplot
-  geom_boxplot(width = 0.1,
-               fill = "white") +
-  # add the mean of values
-  stat_summary(fun.y = mean, 
-               geom = "point", 
-               shape = 23, 
-               size = 2,
-               fill = "red") +
-  # edit plot and axes titles and change colour depending on the factor
-  labs(title = "Microbial Density vs. Latitude",
-       x = "Latitude",
-       y = "UniFracInd",
-       fill = "Latitude") +
-  # change fill fro the default colours
-  scale_fill_manual(values=c("#0099FF", "#009999")) +
-  # change the plot theme to classic (no grey plot area or gridlines)
-  theme_classic()
-# set variable for the style of plot titles; 
+                                 fill = marine$latitude))
+# specific plot title and axes labels
+marine.latitude.titles <- labs(title = "Microbial Density vs. Latitude",
+                               x = "Latitude",
+                               y = "UniFracInd")
+
+# set up re-usable elements to edit violin plots
+# create a violin plot with count on the y axis and including outliers
+violin.plot <- geom_violin(scale = "count",
+                           trim = FALSE)
+## add sample points
+#geom_jitter(height = 0, width = 0.2) +
+# add a boxplot
+add.boxplot <- geom_boxplot(width = 0.1,
+                            fill = "white")
+# add the mean of values
+add.mean <- stat_summary(fun.y = mean,
+                         geom = "point",
+                         shape = 23,
+                         size = 2,
+                         fill = "red")
+# change fill from the default colours
+change.fill <- scale_fill_manual(values=c("#0099FF", "#009999"))
+# change the plot theme to classic (no grey plot area or gridlines)
+set.plot.theme <- theme_classic()
+# set variable for the style of plot titles;
 # hjust is the horizontal position of the title
-plot.titles <- element_text(face = "bold.italic",
+title.style <- element_text(face = "bold.italic",
                             size = 12,
                             hjust = .5)
 # set variable for the style of plot axes
-plot.axes.labels <- element_text(face = "bold",
-                            size = 10)
+axes.labels.style <- element_text(face = "bold",
+                                  size = 10)
 # apply title and axes format to the plot theme and remove legend
-marine.violin.plot + theme(plot.title = plot.titles,
-                           axis.title = plot.axes.labels,
-                           legend.position="none")
+title.axes.theme <- theme(plot.title = title.style,
+                          axis.title = axes.labels.style,
+                          legend.position="none")
+
+# bring plot and formatting together
+marine.latitude.plot + marine.latitude.titles + violin.plot + add.boxplot + 
+  add.mean + change.fill + set.plot.theme + title.axes.theme
 ```
 The violin plot shows that although the median of UniFracInd is identical between samples taken in equatorial waters and those obtained in tropical waters, the distribution of sample microbiological diversity is different in each type of environment. While in temperate waters, the samples with a UniFracInd above the median tend to aggregate close to the median value, with the remaining values more spread below the mid point's value, in tropical waters this trend is reversed, with the samples with higher diversity than the median value more spread and those with lower than median diversity showing UniFracInd values closer to the median value. This is illustrated by the fact that the means of each type of sample (red losanges) difer by a larger margin than the medians, with samples collected in temperate waters showing a lower mean of microbial diversity index (UniFracInd) than those from tropical waters.
 
 ## 2. How does microbial diversity change with time of year?
 ```{r}
-
+# set up plot-specific elements
+# ggplot object plotting UniFracInd against season
+marine.season.plot <- ggplot(marine,
+                             aes(factor(marine$season), 
+                                 marine$UniFracInd,
+                                 fill = marine$season))
+# specific plot title and axes labels
+marine.season.titles <- labs(title = "Microbial Density vs. Season",
+                             x = "Season",
+                             y = "UniFracInd")
+# bring plot and formatting together
+marine.season.plot + marine.season.titles + violin.plot + add.boxplot + 
+  add.mean + change.fill + set.plot.theme + title.axes.theme
 ```
 
  3. Is there an interaction between the season, and location?
