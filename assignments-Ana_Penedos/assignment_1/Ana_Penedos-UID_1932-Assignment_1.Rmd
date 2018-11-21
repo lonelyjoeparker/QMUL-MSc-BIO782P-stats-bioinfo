@@ -25,9 +25,14 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+# packages used:
+install.packages("ggplot2")
+install.packages("plyr")
+install.packages("car")
 ```
 
-# Marine microbial diversity (dataset 1)
+# Dataset 1: Marine microbial diversity
 
 * 2 cruises: Jan and Aug
 * sampled 20l of seawater
@@ -37,7 +42,8 @@ knitr::opts_chunk$set(echo = TRUE)
 * DNA extracted, WGS sequenced, and sequence reads identified using BLASTN
 * Microbial diversity assessed using UniFrac, expressed relative to reference
 
-## Data imported
+## Data import
+The data was imported into Microsoft Excel and checked for obvious issues such as missing values. As none were found, we can import it into R.
 ```{r}
 marine <- read.table("../../labs/Assessment_1/Student_data/2018/part_1_student_1932.tdf", 
                      sep = "\t",
@@ -47,7 +53,14 @@ names(marine) # get the names of data frame variables
 str(marine) # check number of observations, variables and their type
 ```
 
-season and latitude are factors with two levels each, matching the described experiment.
+Season and latitude are factors with two levels each, matching the described experiment.
+
+```{r}
+# Defining variables to simplify dataframe references:
+diversity.col <-marine$UniFracInd
+latitude.col <- marine$latitude
+season.col <- marine$season
+```
 
 ## 1. How does microbial diversity change with latitude?
 ```{r}
@@ -55,13 +68,15 @@ library(ggplot2)
 # set up plot-specific elements
 # ggplot object plotting UniFracInd against latitude
 marine.latitude.plot <- ggplot(marine,
-                             aes(factor(marine$latitude), 
-                                 marine$UniFracInd,
-                                 fill = marine$latitude))
+                             aes(factor(latitude.col), 
+                                 diversity.col,
+                                 fill = latitude.col))
 # specific plot title and axes labels
 marine.latitude.titles <- labs(title = "Microbial Density vs. Latitude",
                                x = "Latitude",
                                y = "UniFracInd")
+# change fill from the default colours
+latitude.fill <- scale_fill_manual(values=c("#009999", "#0099FF"))
 
 # set up re-usable elements to edit violin plots
 # create a violin plot with count on the y axis and including outliers
@@ -78,8 +93,6 @@ add.mean <- stat_summary(fun.y = mean,
                          shape = 23,
                          size = 2,
                          fill = "red")
-# change fill from the default colours
-change.fill <- scale_fill_manual(values=c("#0099FF", "#009999"))
 # change the plot theme to classic (no grey plot area or gridlines)
 set.plot.theme <- theme_classic()
 # set variable for the style of plot titles;
@@ -97,39 +110,178 @@ title.axes.theme <- theme(plot.title = title.style,
 
 # bring plot and formatting together
 marine.latitude.plot + marine.latitude.titles + violin.plot + add.boxplot + 
-  add.mean + change.fill + set.plot.theme + title.axes.theme
+  add.mean + latitude.fill + set.plot.theme + title.axes.theme
 ```
-The violin plot shows that although the median of UniFracInd is identical between samples taken in equatorial waters and those obtained in tropical waters, the distribution of sample microbiological diversity is different in each type of environment. While in temperate waters, the samples with a UniFracInd above the median tend to aggregate close to the median value, with the remaining values more spread below the mid point's value, in tropical waters this trend is reversed, with the samples with higher diversity than the median value more spread and those with lower than median diversity showing UniFracInd values closer to the median value. This is illustrated by the fact that the means of each type of sample (red losanges) difer by a larger margin than the medians, with samples collected in temperate waters showing a lower mean of microbial diversity index (UniFracInd) than those from tropical waters.
+The violin plot shows that although the median of UniFracInd is identical between samples taken in equatorial waters and those obtained in tropical waters, the distribution of sample microbiological diversity is slightly different in each type of environment. While in temperate waters, the samples with a UniFracInd above the median tend to aggregate close to the median value, with the remaining values more spread below the mid point's value, in tropical waters this trend is reversed, with the samples with higher diversity than the median value more spread and those with lower than median diversity showing UniFracInd values closer to the median value. This is illustrated by the fact that the means of each type of sample (red losanges) difer by a larger margin than the medians, with samples collected in temperate waters showing a lower mean of microbial diversity index (UniFracInd) than those from tropical waters.
+In order to test whether these differences are significant we could perform a t-test. The null hypothesis would be:
+H0: There is no difference in mircobial diversity between samples collected in temperate and tropical regions.
+The alternative hypothesis would be:
+Ha: There is a difference in mircobial diversity between samples collected in temperate and tropical regions.
+Significance level, a=0.05
+t-test assumptions:
+1. The data is measured in a continuous scale - UniFracInd is a continuous variable;
+2. The samples collected are random and representative - 20l of water from different locations;
+3. The data is normally distributed;
+4. Large size sample;
+5. Homogeneous variance.
+
+From the histograms below, the total data is close to the normal distribution:
+```{r}
+hist(diversity.col)
+```
+However, the sub-sets of data corresponding to the temperate and tropical samples appear farther from the normal distribution (assumption 3).
+```{r}
+par(mfrow=c(1,2))
+hist(diversity.col[latitude.col=="temperate"])
+hist(diversity.col[latitude.col=="tropical"])
+```
+We can perform a normality test on these:
+```{r}
+shapiro.test(diversity.col[latitude.col=="temperate"])
+shapiro.test(diversity.col[latitude.col=="tropical"])
+```
+The p-value is above the recommended for this test (<0.1; [ethz R manual](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html), which means we cannot exclude the null hypothesis for the Shapiro-Wilk test that the sample is normally distributed, so we can proceed to assess whether the remaining assumptions of the t-test are met.
+
+We can determine the number of samples in each group:
+```{r}
+library(plyr)
+latitude.num.samples <- count(marine, "latitude")
+latitude.num.samples
+
+```
+There are 20 samples in each group, which should be sufficient if the other assumptions are met.
+
+Homoscedasticity of variance can be tested with Levene's test, which is a variance homogeneity test that can be used when there is a slight departure from normality [R cookbook](http://www.cookbook-r.com/Statistical_analysis/Homogeneity_of_variance/):
+```{r}
+library(car)
+leveneTest(diversity.col ~ latitude.col)
+```
+Given that the null hypothesis for the Levene's homoscedasticity test is that the variances are homogeneous, the p-value of 0.391 is not sufficient to reject homoscedasticity.
+
+Given that we can assume all t-tests assumptions are met, we can then perform a t-test as below:
+```{r}
+t.test(diversity.col[latitude.col=="temperate"], diversity.col[latitude.col=="tropical"])
+```
+
+The p-value of 0.1209 would indicate that the likelihood of observing the current samples if H0 is true is above the set significance level of 0.05 and hence we cannot reject the null hypothesis. From these analyses, I would conclude there is no statistically significant difference in microbial diversity at different latitudes.
 
 ## 2. How does microbial diversity change with time of year?
 ```{r}
 # set up plot-specific elements
 # ggplot object plotting UniFracInd against season
 marine.season.plot <- ggplot(marine,
-                             aes(factor(marine$season), 
-                                 marine$UniFracInd,
-                                 fill = marine$season))
+                             aes(factor(season.col), 
+                                 diversity.col,
+                                 fill = season.col))
 # specific plot title and axes labels
 marine.season.titles <- labs(title = "Microbial Density vs. Season",
                              x = "Season",
                              y = "UniFracInd")
+# change fill from the default colours
+season.fill <- scale_fill_manual(values=c("#FF9900", "#6699FF"))
+
 # bring plot and formatting together
 marine.season.plot + marine.season.titles + violin.plot + add.boxplot + 
-  add.mean + change.fill + set.plot.theme + title.axes.theme
+  add.mean + season.fill + set.plot.theme + title.axes.theme
+```
+Higher microbial diversity is observed in the August cruise than in January. The values for UniFracInd are more normally distributed around the median value than those measured by latitude. As such, median and mean values coincide, being higher in August. The spread of UniFracInd values measured in January is smaller than that seen in August.
+
+We can perform a t-test to assess if these differences are significant.
+H0: There is no difference in mircobial diversity between samples collected in Aug and Jan seasons.
+The alternative hypothesis would be:
+Ha: There is a difference in mircobial diversity between samples collected in Aug and Jan seasons.
+Significance level, a=0.05
+
+As for the latitude, we can assume that conditions 1 and 2 for a t-test are verified.
+Normality:
+```{r}
+par(mfrow=c(1,2))
+hist(diversity.col[season.col=="Aug"])
+hist(diversity.col[season.col=="Jan"])
+```
+```{r}
+shapiro.test(diversity.col[season.col=="Aug"])
+shapiro.test(diversity.col[season.col=="Jan"])
+```
+These two groups of observations appear to be normally distributed (p>0.1).
+
+Large size sample:
+```{r}
+season.num.samples <- count(marine, "season")
+season.num.samples
+```
+Again, there are are 20 samples in each group, which should be sufficient for a t-test if the remaining assumptions are met.
+
+Homoscedasticity:
+```{r}
+leveneTest(diversity.col ~ season.col)
+```
+The probability of observing the current variances in the two groups if they are homoscedastic is very high (>0.7) by Levene's test, hence we can assume there is homogeneity in the variances.
+
+We can thus perform a t-test:
+```{r}
+t.test(diversity.col[season.col=="Aug"], diversity.col[season.col=="Jan"])
 ```
 
- 3. Is there an interaction between the season, and location?
+This time, we obtain a p-value < 0.02, below the sgnificance level set (a=0.05). In this context, we would reject the null hypothesis that there is no difference in microbial diversity in each season, and accept the alternative hypothesis that states that there is a statistically significant difference between microbial diversity in Jan and Aug. From the violin plot, we can see that there is higher diversity in Aug than in Jan.
+
+## 3. Is there an interaction between the season, and location?
+To statistically assess whether there is an interaction of season and latitude, we can fit a linear model which takes into account interactions of season and latitude and then do an analysis of variance to determine which factors better explain changes in diversity.
+
+```{r}
+# Correlation of diversity with an interaction of latitude and season
+corr.seas.lat <- lm(diversity.col ~ season.col * latitude.col)
+anova(corr.seas.lat)
+```
+From the ANOVA test of the model fitted taking into acount the interaction of latitude and season on the measure microbial diversity we conclude that, as was apparent from the simpler t-tests, season has a larger impact on microbial diversity than latitude. The term acounting for interaction between season and latitude has a p-valua > 0.1, which has no significance level. This suggests that the main impact on microbial diversity comes from the season when the samples collected and that we cannot exclude the hypothesis that there is no significant interaction between season and location.
+
+# Dataset 2: Pairwise nucleotide substitutions and RNA expression levels
+
+* luciferase
+* RNA-seq project
+* over 900 coding loci from 208 species of plants seq'd
+* found 30 genes with homology to luciferase
+* measured exprssion levels in each species
+* phylogenetic tree
+* computed pairwise genetic distances each species' gene and that of closely-related *Arabidopsis thaliana*
+
+## Data import
+No issues were observed in Excel.
+```{r}
+luciferase <- read.table("../../labs/Assessment_1/Student_data/2018/part_2_student_1932.tdf",
+                         sep = "\t",
+                         header = TRUE)
+head(luciferase) # quick check of correct data import
+names(luciferase) # check names of columns for dataset
+str(luciferase) # check that factors and variables were assigned correctly
+```
+```{r}
+# simplify dataframe references
+luciferase.expression <- luciferase$expression_fold
+aa.substitutions <- luciferase$distance
+```
+## 1. How does the putative 'luciferase' homologue expression change with genetic distance (amino acid substitutions)?
+We can start by visualising these data using a scatter plot:
+```{r}
+plot(aa.substitutions, luciferase.expression)
+```
+There appears to be a low correlation of luciferase expression with amino acid substitutions. We can fit a model and analyse the residuals plots.
+
+```{r}
+expr.dist.model <- lm(luciferase.expression ~ aa.substitutions)
+summary(expr.dist.model)
+```
+From the summary of the model
+```{r}
+par(mfrow=c(2,2))
+plot(expr.dist.model)
+```
 
 
-## Dataset 2: Pairwise nucleotide substitutions and RNA expression levels
+## 2. Comment on whether the model assumptions are valid.
 
-A particular protein family, luciferase (P08659; [http://www.uniprot.org/uniprot/P08659](http://www.uniprot.org/uniprot/P08659) is responsible for bioluminescence. As part of an RNA-seq project we have sequenced over 900 coding loci from 208 species of plants within the Brassicaceae (a large flowering plant family), and are surprised to discover 30 genes with homology to luciferase, and measure their exprssion levels in each species. We build a phylogenetic tree using the sequences and compute the pairwise genetic distances (averaged number of amino-acid substitutions) between a 31st copy of the 'putative' luciferase gene, in the closely-related, high-quality genome sequence of *Arabidopsis thaliana*, and the copy in each species.
 
-**For your report, please use an appropriate analysis to answer the following questions:**
-
- 1. How does the putative 'luciferase' homologue expression change with genetic distance (amino acid substitutions)?
- 2. Comment on whether the model assumptions are valid.
- 3. Assuming your model is *statistically* valid, can you guess what effect is responsible for the relationship you've found?
+## 3. Assuming your model is *statistically* valid, can you guess what effect is responsible for the relationship you've found?
 
 ## Dataset 3: HIV viral load and within-patient population dynamics
 
