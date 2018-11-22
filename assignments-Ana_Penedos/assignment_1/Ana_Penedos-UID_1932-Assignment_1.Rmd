@@ -265,53 +265,105 @@ We can start by visualising these data using a scatter plot:
 ```{r}
 plot(aa.substitutions, luciferase.expression)
 ```
-There appears to be a low correlation of luciferase expression with amino acid substitutions. We can fit a model and analyse the residuals plots.
+There appears to be no significant correlation of luciferase expression with amino acid substitutions.
 
 ```{r}
 expr.dist.model <- lm(luciferase.expression ~ aa.substitutions)
+expr.dist.model
+```
+If we try to fit a regression to these data, we obtain the following relationship:
+luciferase.expression = 0.4529 + 0.1719 * aa.substitutions
+
+```{r}
 summary(expr.dist.model)
 ```
-From the summary of the model
+When we analyse the statistical parameters associated with this model, it is clear that th p-values associated with the intercept and slope of this regression are above the significance level of 0.05. The fit of the curve is also low, with an R-squared of approximately 0.1 and adjusted R-squared of approximately 0.07.
+
+There is no obvious curve that would fit the data better than the linear regression. Despite this, I have attempted to transform the data to represent expression in terms og log and log2, but it seems likely that the values presented have already been transformed in this way. I have also attempted a power of two of the distance. None of these transformations yield more promising plots than the linear regression model. As such, I would conclude that there is no statistically significant (p-value>0.05) correlation between gene expression and distance in the dataset analysed.
+
+## 2. Comment on whether the model assumptions are valid.
+The assumptions behind a regression are that:
+* the errors are normally distributed
+* the residuals are homoscedastic
+* there is a linear structure in the data
+
+As seen above, there is no statistically significant linear structure in the data. However, we can look at whther the remaining assumptions are met using the model diagnosis plots.
+
 ```{r}
 par(mfrow=c(2,2))
 plot(expr.dist.model)
 ```
-
-
-## 2. Comment on whether the model assumptions are valid.
-
+There is no obvious non-linear relationship between the residuals and the predictor (top left). The Normal Q-Q plot indicates that the residuals are normally distributed. The residuals are also randomly distributed around an approximately horizontal line in the Scale-Location plot (bottom left), which is consistent with homoscedasticity. On the final plot, Residuals vs Leverage (bottom right), there are no obvious outliers which disproportionally influence the model. All these observations are consistent with an acceptable model, if not for the low significance level of the regression obtained.
 
 ## 3. Assuming your model is *statistically* valid, can you guess what effect is responsible for the relationship you've found?
+If we were assume the model was statistically valid, i.e., if we had started by determining a level of significance greater than 0.05 (e.g., 0.1), this model would suggest that there was a weak, yet positive, relationship between luciferase expression and the distance to the luciferase putative homologue in *Arabidopsis thaliana*. This would suggest that this putative gene produces a limited amount of luciferase, so species in which the homologue is further away from the model organism's one are the ones where the gene may be functional.
 
-## Dataset 3: HIV viral load and within-patient population dynamics
 
-Populations of the HIV virus are able to evade drug therapy and persist in certain immunoprotected tissues in the body, principally areas of the central nervous system (CNS) where CD4+ T-cells are prevented from entering. An HIV+ patient has enrolled in a study and consented to viral load sampling over 40 weeks in a year. Each week a sample was taken from the brain or spinal cord, and the viral population size ('load', here expressed as log10(number of viral particles per ml)) measured using a chip assay.  Average Shannon population diversity, and mean pairwise genetic distance from individual viruses present in each weekly sample to a reference sequence was assessed using single-copy PCR amplification of the viral Env gene, and we hope to find some relationship between population size, diversity, evolutionary distance and tissue.
+# Dataset 3: HIV viral load and within-patient population dynamics
 
-The sampling (involing an epidural needle inserted deep into the CNS) is painful and carries a high risk of complications, so we need to make sure we make the most of this data. **Do your best to fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure. Write up your results accordingly, with any figures which are appropriate for the research paper we plan to write.** Since we're unsure how likely the host immune system is to penetrate the CNS, CD4+ cell counts in the patient's general circulation were assessed using flow cytometry, and categorized as 'low' or 'high' - you may wish to consider these in your analysis. The rows in the data table are in chronological order.
+* HIV may evade drug therapy and persist in immunoprotected tissues, especially CNS (no CD4+ T-cells)
+* HIV+ patient consented to viral load sampling over 40 weeks in a year
+* sample taken from the brain or spinal cord
+* Chip assay to determine viral 'load', expressed as log10(number of viral particles per ml)
+* Average Shannon population diversity
+* mean pairwise genetic distance from individual viruses present in each weekly sample to a reference sequence was assessed using single-copy PCR amplification of the viral Env gene
+* relationship between population size, diversity, evolutionary distance and tissue
 
-## General feedback from previous years.
+## Data import
+The data was imported following check on Excel. Noted that the lowest viral load is approximately 1.6 times smaller than the second lowest and that the lowest Shannon score is ~20x lower than the second lowest. 
+```{r}
+# import data from tab-delimitted file
+hiv <- read.table("../../labs/Assessment_1/Student_data/2018/part_3_student_1932.tdf",
+                  sep = "\t",
+                  header = TRUE)
+tail(hiv)  # quick check that data was correctly imported
+names(hiv)  # dataframe variable names
+str(hiv)  # dataframe structure
+```
+The data was imported correctly.
 
-Overall, we have been impressed with the standard of previous reports. Most of you manage to get the analyses more or less right, and most of you produce good- quality scripts. None of them had too much annotation - remember that when you’re annotating a script you’re really writing a guide to yourself describing what it does. Think about the information that might be useful if you come back to the analysis a year or two in the future.
+```{r}
+# set up dataframe call vaariables
+viral.load <- hiv$VLoad
+cd4.level <- hiv$CD4
+site <- hiv$tissue
+shannon <- hiv$score_shannon
+distance <- hiv$score_distance
+```
 
-Regarding the "results section" of the reports, these are a lot more variable. Many of you put too much analysis into these, and in particular include material that would not normally go in a journal results section. Preliminary and exploratory analysis, diagnostic plots and the like are not generally included in journal results sections. Many of you have redundant graphs – you shouldn’t show the reader the same set of data twice. A common problem is too much focus on the statistics and not enough on what the statistical results mean in terms of the biology of the system, or in terms of effect sizes: don’t just tell me that there’s an effect, tell me how big the effect is, and put it in meaningful biological terms.
+## Fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure
+* The rows in the data table are in chronological order
+* Likelihood of CD4 cell penetration into CNS may vary between patients
 
-Figure captions are something that most of you need to work on. When you’re writing a figure caption, it’s a good idea to try to write it so that a casual reader who is skimming through the paper can look at the figure, have a look at the caption and have at least a rough idea about what the figure is showing. That doesn’t mean that each figure should have the whole methods section reproduced, but you can include a sentence or two that gives the casual reader a basic idea of what’s going on.
+* viral load (log10)
+* CD4: hi or lo
+* 2 tissues: spinal cord and brain
+* Shannon pop diversity
+* distance to ref env seq
 
-Other common problems include:
+We can start by performing a quick visualisation of the data to get a sense of the most relevant variables.
+```{r}
+par(mfrow=c(2, 2))
+plot(cd4.level, viral.load)
+plot(site, viral.load)
+plot(shannon, viral.load)
+plot(distance, viral.load)
+```
 
- * Including p-values without test statistics or degrees of freedom
- * Including multiple tests of the same thing (e.g. using a post-hoc test on a fitted
-model, collapsing two factor levels and then comparing models with a partial F-
-test)
- * Carrying out tests for normality on data prior to analysis (skipping data exploration/eyeballing and )
- * Mixing p-values and AIC as criteria for model selection - the philosophy behind
-these is very different and you should use one or the other but not both.
- * Giving significance levels for main effects when they are also included in higher-
-order interaction terms
- * Including graphs showing no effect. There are circumstances when you might want
-to do this, if you’re reporting a negative result and you think it’s necessary to make a point about how little relationship there is, but in general we wouldn’t put this sort of thing in.
- * Including code, function names etc. from R. Results sections from journals wouldn’t usually include this kind of material unless you’re describing an esoteric analysis that the readers will not be familiar with, in which case you might say “We fitted a generalised additive model to the data using the gam() function as implemented in the mcgv package (Wood 2014)” but usually you would just tell the reader the type of analysis used.
- * Referring to “non-significant” results as “insignificant”. Don’t do this - have a think about why.
- * No references! Not a single person put a reference in their results section.
+```{r}
+par(mfrow=c(3, 4))
+plot(cd4.level[site=="brain"], viral.load[site=="brain"])
+plot(cd4.level[site=="spinalCord"], viral.load[site=="spinalCord"])
+plot(site[cd4.level=="hi"], viral.load[cd4.level=="hi"])
+plot(site[cd4.level=="lo"], viral.load[cd4.level=="lo"])
+plot(shannon[site=="brain"], viral.load[site=="brain"])
+plot(shannon[site=="spinalCord"], viral.load[site=="spinalCord"])
+plot(shannon[cd4.level=="hi"], viral.load[cd4.level=="hi"])
+plot(shannon[cd4.level=="lo"], viral.load[cd4.level=="lo"])
+plot(distance[site=="brain"], viral.load[site=="brain"])
+plot(distance[site=="spinalCord"], viral.load[site=="spinalCord"])
+plot(distance[cd4.level=="hi"], viral.load[cd4.level=="hi"])
+plot(distance[cd4.level=="lo"], viral.load[cd4.level=="lo"])
+```
 
-\pagebreak 
+
