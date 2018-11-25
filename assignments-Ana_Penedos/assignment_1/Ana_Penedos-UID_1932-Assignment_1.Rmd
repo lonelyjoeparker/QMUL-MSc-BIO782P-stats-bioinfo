@@ -319,6 +319,7 @@ hiv <- read.table("../../labs/Assessment_1/Student_data/2018/part_3_student_1932
 tail(hiv)  # quick check that data was correctly imported
 names(hiv)  # dataframe variable names
 str(hiv)  # dataframe structure
+hiv
 ```
 The data was imported correctly.
 
@@ -344,26 +345,137 @@ distance <- hiv$score_distance
 We can start by performing a quick visualisation of the data to get a sense of the most relevant variables.
 ```{r}
 par(mfrow=c(2, 2))
-plot(cd4.level, viral.load)
-plot(site, viral.load)
-plot(shannon, viral.load)
-plot(distance, viral.load)
+plot(cd4.level, viral.load,
+     main = "Viral Load vs. CD4 level",
+     xlab = "CD4 level",
+     ylab = "viral load")
+plot(site, viral.load,
+     main = "Viral Load vs. Tissue",
+     xlab = "tissue",
+     ylab = "viral load")
+plot(shannon, viral.load,
+     main = "Viral Load vs. Population Diversity",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(distance, viral.load,
+     main = "Viral Load vs. Distance to Ref",
+     xlab = "distance",
+     ylab = "viral load")
+```
+The viral load appears to be higher when the level of CD4-positive cells is higher. When the samples are collected from the spinal cord, the values for viral load have a lower median than for brain biopsies. I cannot detect a clear relationship between viral load and either the Shannon measurement of population diversity or the distance to a reference sequence.
+
+We can look at the combined effects of CD4 levels and tissue on viral load.
+
+```{r}
+par(mfrow=c(2, 2))
+plot(cd4.level[site=="brain"], viral.load[site=="brain"],
+     main = "Viral Load in Brain",
+     xlab = "CD4 level",
+     ylab = "viral load")
+plot(cd4.level[site=="spinalCord"], viral.load[site=="spinalCord"],
+     main = "Viral Load in Spinal Cord",
+     xlab = "CD4 level",
+     ylab = "viral load")
+plot(site[cd4.level=="hi"], viral.load[cd4.level=="hi"],
+     main = "Viral Load for High CD4 level",
+     xlab = "tissue",
+     ylab = "viral load")
+plot(site[cd4.level=="lo"], viral.load[cd4.level=="lo"],
+     main = "Viral Load for Low CD4 level",
+     xlab = "tissue",
+     ylab = "viral load")
 ```
 
 ```{r}
-par(mfrow=c(3, 4))
-plot(cd4.level[site=="brain"], viral.load[site=="brain"])
-plot(cd4.level[site=="spinalCord"], viral.load[site=="spinalCord"])
-plot(site[cd4.level=="hi"], viral.load[cd4.level=="hi"])
-plot(site[cd4.level=="lo"], viral.load[cd4.level=="lo"])
-plot(shannon[site=="brain"], viral.load[site=="brain"])
-plot(shannon[site=="spinalCord"], viral.load[site=="spinalCord"])
-plot(shannon[cd4.level=="hi"], viral.load[cd4.level=="hi"])
-plot(shannon[cd4.level=="lo"], viral.load[cd4.level=="lo"])
-plot(distance[site=="brain"], viral.load[site=="brain"])
-plot(distance[site=="spinalCord"], viral.load[site=="spinalCord"])
-plot(distance[cd4.level=="hi"], viral.load[cd4.level=="hi"])
-plot(distance[cd4.level=="lo"], viral.load[cd4.level=="lo"])
+par(mfrow=c(2, 4))
+plot(shannon[site=="brain"], viral.load[site=="brain"],
+     main = "Viral Load (Brain)\nvs. Shannon",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(shannon[site=="spinalCord"], viral.load[site=="spinalCord"],
+     main = "Viral Load (Spinal Cord)\nvs. Shannon",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(shannon[cd4.level=="hi"], viral.load[cd4.level=="hi"],
+     main = "Viral Load (High CD4)\nvs. Shannon",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(shannon[cd4.level=="lo"], viral.load[cd4.level=="lo"],
+     main = "Viral Load (Low CD4)\nvs. Shannon",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(distance[site=="brain"], viral.load[site=="brain"],
+     main = "Viral Load (Brain)\nvs. Distance",
+     xlab = "distance",
+     ylab = "viral load")
+plot(distance[site=="spinalCord"], viral.load[site=="spinalCord"],
+     main = "Viral Load (Spinal Cord)\nvs. Distance",
+     xlab = "distance",
+     ylab = "viral load")
+plot(distance[cd4.level=="hi"], viral.load[cd4.level=="hi"],
+     main = "Viral Load (High CD4)\nvs. Distance",
+     xlab = "distance",
+     ylab = "viral load")
+plot(distance[cd4.level=="lo"], viral.load[cd4.level=="lo"],
+     main = "Viral Load (Low CD4)\nvs. Distance",
+     xlab = "distance",
+     ylab = "viral load")
 ```
 
+```{r}
+par(mfrow=c(2, 2))
+plot(shannon[site=="brain"][cd4.level=="hi"], viral.load[site=="brain"][cd4.level=="hi"],
+     main = "Viral Load (Brain/Hi)\nvs. Shannon",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(shannon[site=="spinalCord"][cd4.level=="hi"], viral.load[site=="spinalCord"][cd4.level=="hi"],
+     main = "Viral Load (SC/Hi)\nvs. Shannon",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(shannon[site=="brain"][cd4.level=="lo"], viral.load[site=="brain"][cd4.level=="lo"],
+     main = "Viral Load (Brain/Lo)\nvs. Shannon",
+     xlab = "shannon",
+     ylab = "viral load")
+plot(shannon[site=="spinalCord"][cd4.level=="lo"], viral.load[site=="spinalCord"][cd4.level=="lo"],
+     main = "Viral Load (SC/Lo)\nvs. distance",
+     xlab = "shannon",
+     ylab = "viral load")
+```
+
+```{r}
+par(mfrow=c(2, 2))
+plot(distance[site=="brain"][cd4.level=="hi"], viral.load[site=="brain"][cd4.level=="hi"],
+     main = "Viral Load (Brain/Hi)\nvs. distance",
+     xlab = "distance",
+     ylab = "viral load")
+plot(distance[site=="spinalCord"][cd4.level=="hi"], viral.load[site=="spinalCord"][cd4.level=="hi"],
+     main = "Viral Load (SC/Hi)\nvs. distance",
+     xlab = "distance",
+     ylab = "viral load")
+plot(distance[site=="brain"][cd4.level=="lo"], viral.load[site=="brain"][cd4.level=="lo"],
+     main = "Viral Load (Brain/Lo)\nvs. distance",
+     xlab = "distance",
+     ylab = "viral load")
+plot(distance[site=="spinalCord"][cd4.level=="lo"], viral.load[site=="spinalCord"][cd4.level=="lo"],
+     main = "Viral Load (SC/Lo)\nvs. distance",
+     xlab = "distance",
+     ylab = "viral load")
+```
+The relationship between population diversity or distance to the reference sequence to the viral load determined appears to depend on the site of sampling or the level of CD4-positive cells.
+We could then fit a model that takes into consideration the interaction between tissue and CD4 level and then the remaining, non-interacting, variables of Shannon and distance.
+Our start model could be the following:
+```{r}
+start.model <- lm(viral.load ~ site + cd4.level + shannon + distance + site:cd4.level)
+summary(start.model)
+```
+
+The start model has a low p-value (~0.006).
+We can attempt to improve the fitting with the step function:
+```{r}
+my_model=step(start.model,
+              scope=c(lower=~site,
+                      upper=~site * cd4.level * shannon * distance),
+              direction="both")
+
+```
 
