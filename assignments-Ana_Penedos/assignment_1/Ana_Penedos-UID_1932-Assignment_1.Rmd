@@ -472,10 +472,53 @@ summary(start.model)
 The start model has a low p-value (~0.006).
 We can attempt to improve the fitting with the step function:
 ```{r}
-my_model=step(start.model,
-              scope=c(lower=~site,
-                      upper=~site * cd4.level * shannon * distance),
-              direction="both")
+my.model = step(start.model,
+                scope=c(lower=~site,
+                        upper=~site * cd4.level * shannon * distance),
+                direction="both")
 
 ```
+
+It looks like the interaction of the Shannon score and CD4 level contribute to a lower AIC.
+This would suggest that the interaction between population diversity and the presence of CD4-positive cells have an effect on the HIV viral load. This seems to work intuitively, so I will keep this interaction in the model. On the other hand, it appears that population diversity (Shannon) on its ownn is not good at explaining viral load, so we can drop the term from the model.
+
+If we were to use the final model as a start for a backwards step optimisation we could find if we can drop some of these factors to simplify the model.
+```{r}
+my.model2 <- step(my.model,
+                  direction="backward")
+```
+No terms to remove.
+From the stepwise optimisation in both directions it looked like the cd4.level:shannon term was the one that led to the biggest reduction in AIC. I can try to start building a model from this term only.
+```{r}
+my.model3 <- step(lm(viral.load ~ cd4.level:shannon),
+                  scope = ~site * cd4.level * shannon * distance,
+                  direction = "forward")
+```
+
+The resulting model is the same as obtained for the start.model testing in both directions. Given that I have tried searching for a model in both directions, and starting from 3 different models, it seems likely that this is the best fitting model with this data.
+
+```{r}
+final.model <- my.model3
+summary(final.model)
+```
+
+```{r}
+par(mfrow = c(2,2))
+plot(final.model)
+```
+The plots for the model's residuals raise no major concerns with the normality of residual distribution and the homoscedasticity of errors.
+
+viral.load ~ distance + site + shannon + cd4.level + shannon:cd4.level + site:shannon + distance:site
+
+According to this model, HIV viral load is best explained by taking into account:
+* distance, how much the viruses have evolved from a reference sequence. This could be seen as a measure of adaptation of the virus to better replicate in the host or the distance from a well-adapted virus;
+* site, the tissue type of the sample. This will affect the environment of replication as well as the accessbility of the site to CD4-positive cells;
+* Shannon score, a measurement of the viral population diversity: more diverse populations may have adaptive advantages in the response to the immune system or drugs. On the other hand, specific viruses can be randomly selected through bottleneck effects;
+* CD4 level, how many CD4-positive cells were found in the sample: this would be an indicator of an ongoing immune response;
+* Shannon score interaction with CD4 levels: this could be giving an indicator of effective vs. non-effective immune-responses as more diverse populations may evolve under selective pressure or be restricted to a few evading viruses;
+* site interaction with Shannon score: could indicate how successfully viruses are replicating or being eliminated from a given tissue;
+* distance to reference interaction with site: once the virus infects a tissue, it may need to adapt to that tissue's environment and hence it will evolve towards or away from the genome reference used.
+
+All these appear to be sensible factors in explaining the viral load in a given sample.
+
 
