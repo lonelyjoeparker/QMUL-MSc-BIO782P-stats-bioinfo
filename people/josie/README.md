@@ -1,9 +1,7 @@
 # name
 
-Ralph woooooo
+Josie! :)
 
 ## Description
 
-
-oppppppp
 bombay stripe
