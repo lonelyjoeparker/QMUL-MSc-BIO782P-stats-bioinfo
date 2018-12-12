@@ -1,0 +1,291 @@
+---
+title: "Statistics and Bioinformatics Assignment Part 1"
+author: "Bryan Mensah"
+date: "21 November 2018"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Student ID = 180946806
+
+** I have submitted a github pull request **  
+## PC SPECS
+
+Acer Aspire 5 A515-51G-574F<br/>
+
+Intel Core i5 7200U<br/>
+
+8 GB Memory<br/>
+
+Intel HD Graphics 620<br/>
+
+Total storage capacity	1,128 GB<br/>
+
+```{r include=FALSE}
+#install.packages("pander") # installed and loaded pander program to format R output.(Install previously that why ive commented it out)
+library(pander)
+```
+
+
+```{r echo=FALSE}
+panderOptions("table.split.table", Inf) #option for formatting table
+```
+
+Note <br/>  
+Anova Hypothesis for all the anova tests conducted in the report.  
+Null Hypothesis-  The mean is the same for all groups.   
+Alternative Hypothesis- The mean isn’t the same for all groups.      
+
+
+
+## Question 1
+
+```{r echo=FALSE}
+#Imported dataset 1 and assigned shorter variable names to the variables
+marine <-read.table("part_1_student_1864.tdf.txt", header = T)
+Diversity <- marine$UniFracInd #unifrac renamed as diversity
+Season <- marine$season
+Latitude <- marine$latitude
+```
+
+
+```{r echo=FALSE, fig.width=5,fig.height=5,fig.cap="Figure 1: Boxplot of the marine microbial diversity and the latitude"}
+#produced boxplot and scatter plot of latitude and diversity
+plot(Diversity ~ Latitude, xlab ="Latitude", ylab ="Diversity")
+```
+
+```{r echo=FALSE, include=FALSE}
+#produced scatter plot of latitude and diversity
+plot(Diversity,Latitude,xlab ="Latitude", ylab ="Diversity")
+```
+
+```{r echo=FALSE}
+model1 <-lm(Diversity ~ Latitude) #created a model (using diversity and latitude) for anova analysis
+pander(anova(model1)) #printed formatted anova table of model 1
+```
+1: Analysing the effects of differing latitude on the Microbial marine diveristy  
+
+
+Referring to figure 1, the boxplots have a similar median. However, the tropical boxplot is skewed to the right which suggest a potential bias in our data favouring larger values. Tropical also has a higher interquartile range. These differences suggest variation between our latitude data. There are no outliers. <br>    
+
+**ANOVA analysis** <br/>  
+
+Referring to table 1, p > 0.05 we accept the null and reject the alternative. The mean is the same for all groups. So, there is no statistically significant difference between the two means.<br>   
+From the results of our analysis it suggests:<br>   
+Microbial Diversity had no large effect on the latitude (tropical and temperate) so we could say that any changes in the microbial diversity may not be dependent on the latitude and any changes to suggest otherwise would be due to chance. However, given our sample size we should consider further analysis before drawing any conclusion. <br>
+
+
+## Question 1 part 2
+
+```{r echo=FALSE, fig.width=5,fig.height=5,fig.cap="Figure 2:Boxplot of the microbial diversity and the Season"}
+#produced boxplot and scatter plot of latitude and season
+plot(Diversity ~ Season , xlab ="Season", ylab ="Diversity")
+```
+
+```{r echo=FALSE, include=FALSE}
+#produced scatter plot of season and diversity
+plot(Season,Latitude,xlab ="Season", ylab ="Diversity")
+```
+
+```{r echo=FALSE}
+model2 <-lm(Diversity ~ Season) #created a model (using diversity and season) for anova analysis
+pander(anova(model2)) #printed formatted anova table of model 2
+```
+2:Analysing the effects of differing time of years (season) on the Microbial marine diversity  
+
+Referring to figure 2, boxplots have a similar median. January has a higher upper quartile range and interquartile range. These differences suggest variation between our data.<br>  
+
+**ANOVA analysis**<br/>  
+
+Referring to table 2, P > 0.05 we accept the null and reject the alternative.   
+The mean is the same for all groups. So there is no statistically significant difference between the two means we can conclude that those differences may be due to chance.<br>
+From the results of our analysis we found:<br> 
+Microbial Diversity had no large effect on the season. so, we could say that any changes in the microbial diversity may not be dependent on the season and any changes to suggest otherwise would be due to chance. However, given our sample size we should consider further analysis before drawing any conclusion. 
+
+
+
+## Question 1 Part 3
+```{r  echo=FALSE, fig.width=6,fig.height=6,fig.cap="Figure 3:Interaction plot showing the interactions of the 3 variables (Season, Latitude and Diversity)"}
+interaction.plot(Season,Latitude,Diversity) #created an interaction plot
+```
+
+```{r echo=FALSE}
+#convert variables to numeric with as.numeric
+Season <-as.numeric(marine$season)
+Latitude <-as.numeric(marine$latitude)
+```
+
+
+```{r echo=FALSE}
+model3 <-lm(Latitude ~ Season) #created a model (using latitude and season) for anova analysis
+pander(anova(model3)) #printed formatted anova table of model 3
+```
+3:Analysing the effects of differing latitude on the season  
+
+
+
+The interaction plot show that the season and location don’t interact. However, as season increases the latitude decreases.<br>
+
+**ANOVA analysis**<br/>
+
+Referring to table 3,P > 0.05, so we accept the null and reject the alternative.  
+The mean is the same for all groups.<br>   
+
+From the results of our analysis we found:<br> 
+
+Season had no large effect on the latitude- Any changes to suggest otherwise would be due to chance. However, given our sample size we should consider further analysis before drawing any conclusion.
+For our model’s appropriate tests were conducted and passed to ensure assumptions were valid.
+
+
+
+
+## Question 2
+```{r echo=FALSE}
+#imported the dataset
+protein <-read.delim("part_2_student_1864.tdf.txt", header = T)
+Expression <- protein$expression_fold
+Distance <- protein$distance
+```
+
+
+```{r  echo=FALSE, fig.width=5,fig.height=5,fig.cap="Figure 4:Scatter plot of the relationship between gene expression and genetic distance"}
+plot(Expression, Distance)
+```
+
+
+
+
+```{r echo=FALSE}
+pearson<- cor.test(Expression, Distance, method = "pearson")
+
+pander(pearson)
+```
+  
+Referring to figure 4 and pearson test above, the graph shows a strong negative correlation(r=-0.9428). This suggest that as genetic expression decreases the genetic distance also decreases.<br>
+  
+    
+  
+  
+
+```{r  echo=FALSE}
+model4 <- lm(Expression ~ Distance)
+pander((anova(model4))) #printed formatted anova table of model 4
+```
+4:Analysing the effects of  differing gene expression on the genetic distance
+
+
+Referring to table 4, P < 0.05 we reject the null and accept the alternative. The mean isn’t the same for all groups. This means that the expression does have a significant on the genetic distance.  
+
+
+## Part 2 
+```{r  echo=FALSE, fig.width=5,fig.height=5,fig.cap="Figure 5:Diagnostic plots of anova model of Expression and Distance"}
+par(mfrow=c(2,2)) 
+plot(model4) # Diagnostic plots of model 4 
+par(mfrow=c(1,1)) 
+```
+
+The model assumption all valid, referring to figure 5 the graphs look fine with no random or unusual outlier values.  
+
+
+## Part 3
+
+The effect that responsible for the relationship is natural selection (evolution).Changes in the DNA sequences cause changes in the expression level of the gene (Wu, no date). Depending on the type of natural selection can cause an increase or decrease in the frequency of gene (Herrera, Garcia-Bertrand and Salzano, no date). This then cause the expression level to be altered depending on the intensity of the natural selection (Akutsu, 2010). So as the gene expression decrease we can see less variation in our gene meaning those genes are closely related.And we see the opposite for genes that arent related or distanly related.  
+
+
+
+
+# Question 3
+```{r echo=FALSE}
+#imported the dataset
+Hiv <- read.delim("part_3_student_1864.tdf.txt" , header = T)
+Viral <- Hiv$VLoad
+Shannon <-Hiv$score_shannon
+HDistance <-Hiv$score_distance
+Tissue <- Hiv$tissue
+CD4 <- Hiv$CD4
+```
+
+
+## Model Selection
+When selecting the model, I decided to use the AIC value as my selection criteria. I used a stepwise regression. The forwards, backward and both searches were performed. The (both) model was selected as it had the lowest AIC value and also the model was simple enough while also providing worthwhile information.<br>    
+Model selected: Viral ~ CD4 + Shannon Diversity + Genetic Distance <br>  
+Using the model selected in method selection. Further analysis was carried out.
+
+```{r echo=FALSE,include=FALSE }
+Backward <- step(lm(Viral ~ Tissue*CD4*Shannon*HDistance), direction= "backward")
+```
+
+```{r echo=FALSE,include=FALSE}
+Forward <- step(lm(Viral ~ Tissue*CD4), scope=(~ CD4*Tissue*Shannon*HDistance), direction="forward")
+```
+
+```{r echo=FALSE,include=FALSE}
+Both<- step(lm(Viral ~ Tissue*CD4), scope=c(lower=~CD4 , upper=~Tissue*CD4*Shannon*HDistance), direction=c("both"))
+```
+
+```{r echo=FALSE, results='asis'}
+model4 <-anova(Backward,Forward,Both)
+pander((model4)) #printed formatted anova table of 3 models (from top to bottom. Backward,Forward and Both)
+```
+5: Anova table of 3 models (From top to bottom.Backward,Forward and Both)
+
+```{r echo=FALSE, include=FALSE}
+plot(Viral,CD4) # produces scatter plot of viral population size and CD4
+```
+
+```{r echo=FALSE, fig.width=4,fig.height=4,fig.cap="Figure 6:Scatter plot of the relationship between viral population size and Shannon diversity"}
+plot(Viral,HDistance) # produces scatter plot of viral population size and Shannon Diversity
+```
+
+```{r echo=FALSE, fig.width=4,fig.height=4,fig.cap="Figure 7:Scatter plot of the relationship between viral population size and Genetic distance"}
+plot(Viral,Shannon) # produces scatter plot of viral population size and Genetic Distance
+```
+
+
+```{r echo=FALSE}
+model5 <- lm(Viral ~ CD4 + Shannon + HDistance)
+pander((anova(model5))) #printed formatted anova table of model 5
+```
+6 : Analysing the effect of differing CD4,Shannon diversity and genetic distance on viral population size
+
+
+Referring to figure 6, the graph shows a weak negative correlation. This suggests a possible relationship. As the viral population size decreases, the Shannon diversity decrease. <br>
+Referring to figure 7, the graph shows a weak positive correlation. This suggests a possible relationship. As the viral population size increases, the genetic distance increase. <br>
+
+
+**ANOVA analysis**<br/>
+
+Referring to table 6, P > 0.05 for CD4 we accept the null and reject the alternative.<br>CD4  had no large effect on the viral population size so we could say that any changes in the viral population size may not be dependent on the CD4 and any changes to suggest otherwise would be due to chance <br>
+The mean is the same for all groups. Referring to the table 6, P < 0.05 for Shannon population diversity and genetic distance for we reject the null and accept the alternative. The mean isn’t the same for all groups. <br>
+This means that both the Shannon population diversity and genetic distance do have a very significant effect on the viral load population size. So as the viral population size changes both the Shannon population diversity and genetic distance changes enough to affect the viral population size.<br>
+
+From the results of our analysis we found:<br>
+A positive relationship between Viral load population size and genetic distance. This could be due to the high mutation rate of RNA viruses. Which lead to high genetic variability within the population (Jridi et al., 2006).This variability causes an increase in the genetic distance.<br>  
+
+No relationship between Viral load population size and CD4. This could suggest they don’t directly impact each other. <br>
+
+A negative relationship between Viral load population size and Shannon diversity. Shannon diversity is measure of diversity(Van Dyke, 2008). So as the population decrease there is less variation and so less diversity. <br>  
+
+
+
+
+
+
+**References** <br>
+
+Akutsu, T. (2010) Genome informatics 2010 : the 10th Annual International Workshop on Bioinformatics and Systems Biology (IBSB 2010) : Kyoto University, Japan, 26-28 July 2010. Imperial College Press. Available at: https://books.google.co.uk/books?id=5roz_KaMC1oC&pg=PA154&dq=gene+expression+and+genetic+distance+selection+pressure&hl=en&sa=X&ved=0ahUKEwipl9yosYHfAhXlLcAKHVYmCMIQ6AEIXTAJ#v=onepage&q=gene expression and genetic distance selection pressure&f=false (Accessed: 2 December 2018).<br>
+
+Van Dyke, F. (2008) Conservation biology : foundations, concepts, applications. Springer. Available at: https://books.google.co.uk/books?id=Evh1UD3ZYWcC&pg=PA90&dq=SHANNON+DIVERSITY&hl=en&sa=X&ved=0ahUKEwiw0LSCx4HfAhVqSBUIHbz3BpUQ6AEIOzAE#v=onepage&q=SHANNON DIVERSITY&f=false (Accessed: 2 December 2018).<br>
+
+Herrera, R. J., Garcia-Bertrand, R. and Salzano, F. M. (no date) Genomes, evolution, and culture : past, present, and future of humankind.<br>
+
+Jridi, C. et al. (2006) ‘Distinct viral populations differentiate and evolve independently in a single perennial host plant.’, Journal of virology. American Society for Microbiology (ASM), 80(5), pp. 2349–57. doi: 10.1128/JVI.80.5.2349-2357.2006.<br>
+
+UniProt (2018) P08659. Available at: http://www.pnas.org/cgi/doi/10.1073/pnas.84.10.3264 (Accessed: 21 November 2018).<br>
+
+Wu, J. Y. (no date) Posttranscriptional gene regulation : RNA processing in eukaryotes.<br>
