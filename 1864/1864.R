@@ -5,7 +5,7 @@
 
 #Question 1
 #Imported dataset 1 and assigned shorter variable names to the variables
-marine <-read.table("~/Datasets/part_1_student_1864.tdf.txt", header = T) #read the file. 
+marine <-read.table("~/Datasets/part_1_student_1864.tdf.txt", header = T)  
 Diversity <- marine$UniFracInd #unifrac renamed as diversity
 Season <- marine$season
 Latitude <- marine$latitude
