@@ -3,31 +3,13 @@ title: "BIO782P - Week 2 Assignment"
 author: "Ana Penedos (UID 1932)"
 date: "14th December 2018"
 output:
-  html_notebook: default
-   # latex_engine: xelatex
-    number_sections: no
   html_document:
-    toc: no
-  pdf_document:
-    fig_caption: no
-    fig_height: 4
-    fig_width: 5
-    keep_tex: no
-#monofont: Monaco, FreeMono
-monofont: FreeMono
-#mainfont: Helvetica Light, Helvetica
-mainfont: Helvetica
-subparagraph: yes
-geometry: a4paper, margin=20mm
-editor_options: 
-  chunk_output_type: inline
+    df_print: paged
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-# packages used:
-
 ```
 
 # Part A
@@ -61,17 +43,18 @@ legend(0,-40,"concentration 3",fill="red")
 ```{r}
 predict = function(activation_threshold,stimulation_voltage){
   # Produces a vector of activation values (mV) based on whether the 
-  # stimulation voltage is below (-70) or above (40) the activation threshold.
+  # stimulation voltage is less or equal (-70) or greater (40) than the 
+  # activation threshold.
   #
   # Args:
-  #   activation_threshold: the voltage at which the axon becomes 
+  #   activation_threshold - the voltage at which the axon becomes 
   #                         activated (numeric).
-  #   stimulation_voltage: the voltages at which the axon was stimulated 
+  #   stimulation_voltage - the voltages at which the axon was stimulated 
   #                        (vector of numeric values).
   #
-  # Returns: vector of same length as the stimulation_voltage argument
-  #          
-  #
+  # Returns: 
+  #   Vector of same length as the stimulation_voltage argument
+  #   with -70 or 40 values.
   
   # produces a vector of '-70's the same length as the variable
   # 'stimulation_voltage'
@@ -82,7 +65,7 @@ predict = function(activation_threshold,stimulation_voltage){
   # When stimulation_voltage > activation_threshold, value is set to 40.
   activation[stimulation_voltage>activation_threshold] = 40
   # returns vector of same length as the stimulation_voltage vector argument
-  # with value -70 when stimulation below threshold and 40 when above.
+  # with value -70 when stimulation <= threshold and 40 when > threshold.
   return(activation)
 }
 
@@ -92,6 +75,7 @@ predict(-80, -80)
 predict(-80, -75)
 predict(-80, -70)
 predict(-80, -40)
+predict(-80, c(-90, -85, -80, -75, -70))
 ?rep()
 test_rep <- rep(-70, 10)
 test_rep
@@ -101,7 +85,7 @@ test_rep[test_a_vector > 5] = 40
 test_rep
 ```
 
-The 'predict' function takes an activation threshold and a vestor of stimulations used and produces a vector of the same length of the vector containing the voltages of stimulation used, with -70 in the positions corresponding to stimulation under the threshold and 40 in those where the stimulation voltage was above the threshold.
+The 'predict' function takes an activation threshold and a vector of stimulations used and produces a vector of the same length of the vector containing the voltages of stimulation used, with -70 in the positions corresponding to stimulation under the threshold and 40 in those where the stimulation voltage was above the threshold.
 
 ```{r}
 
@@ -121,12 +105,14 @@ calculate_errors = function(predicted, observed){
 }
 ```
 
-The "calculate_errors" function calculates the total sum of squares (sum((observed - expected)^2)) estimating the total deviation of a vector of measured values from a vector of predicted values.
+The "calculate_errors" function calculates the residual sum of squares (sum((observed - predicted)^2)) estimating the total deviation of a vector of measured values from a vector of predicted values.
 
 ```{r}
-fit_threshold = function(input_values_stimulation,input_values_response,threshold){
-  # Calculates the fit error using observed response values and response values 
-  # predicted from stimulation values and threshold.
+fit_threshold = function(input_values_stimulation,
+                         input_values_response,
+                         threshold){
+  # Calculates the fit error using observed response values and response 
+  # values predicted from stimulation values and threshold.
   #
   # Args:
   #    input_values_stimulation - vector of numeric values for stimulation 

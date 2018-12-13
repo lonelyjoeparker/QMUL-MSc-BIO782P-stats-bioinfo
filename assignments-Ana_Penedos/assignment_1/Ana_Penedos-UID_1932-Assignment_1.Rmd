@@ -2,25 +2,6 @@
 title: "BIO782P - Week 1 Assignment"
 author: "Ana Penedos (UID 1932)"
 date: "14th December 2018"
-output:
-  html_notebook: default
-   # latex_engine: xelatex
-    number_sections: no
-  html_document:
-    toc: no
-  pdf_document:
-    fig_caption: no
-    fig_height: 4
-    fig_width: 5
-    keep_tex: no
-#monofont: Monaco, FreeMono
-monofont: FreeMono
-#mainfont: Helvetica Light, Helvetica
-mainfont: Helvetica
-subparagraph: yes
-geometry: a4paper, margin=20mm
-editor_options: 
-  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -28,7 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # packages used:
 install.packages("ggplot2")
-install.packages("plyr")
 install.packages("car")
 ```
 
@@ -38,14 +18,14 @@ install.packages("car")
 * sampled 20l of seawater
 * 10 separate locations 
 * equatorial (0-8 degrees N) and temperate (48-55 degrees N) waters
-* samples were filtered to enrich the microbiome
+* samples were filtered for microbiome enrichment
 * DNA extracted, WGS sequenced, and sequence reads identified using BLASTN
 * Microbial diversity assessed using UniFrac, expressed relative to reference
 
 ## Data import
 The data was imported into Microsoft Excel and checked for obvious issues such as missing values. As none were found, we can import it into R.
 ```{r}
-marine <- read.table("../../labs/Assessment_1/Student_data/2018/part_1_student_1932.tdf", 
+marine <- read.table("part_1_student_1932.tdf", 
                      sep = "\t",
                      header = TRUE)
 head(marine) # check if there are obvious issues with data import
@@ -94,24 +74,31 @@ add.mean <- stat_summary(fun.y = mean,
                          size = 2,
                          fill = "red")
 # change the plot theme to classic (no grey plot area or gridlines)
-set.plot.theme <- theme_classic()
+set.plot.theme <- theme_classic(base_size = 16)
 # set variable for the style of plot titles;
 # hjust is the horizontal position of the title
 title.style <- element_text(face = "bold.italic",
-                            size = 12,
+                            size = 18,
                             hjust = .5)
 # set variable for the style of plot axes
-axes.labels.style <- element_text(face = "bold",
-                                  size = 10)
+axes.labels.style <- element_text(face = "bold")
 # apply title and axes format to the plot theme and remove legend
 title.axes.theme <- theme(plot.title = title.style,
                           axis.title = axes.labels.style,
                           legend.position="none")
 
 # bring plot and formatting together
-marine.latitude.plot + marine.latitude.titles + violin.plot + add.boxplot + 
+violin_latitude <- marine.latitude.plot + marine.latitude.titles + violin.plot + add.boxplot + 
   add.mean + latitude.fill + set.plot.theme + title.axes.theme
+violin_latitude
 ```
+```{r}
+mean(diversity.col[latitude.col=="temperate"])
+sd(diversity.col[latitude.col=="temperate"])
+mean(diversity.col[latitude.col=="tropical"])
+sd(diversity.col[latitude.col=="tropical"])
+```
+
 The violin plot shows that although the median of UniFracInd is identical between samples taken in equatorial waters and those obtained in tropical waters, the distribution of sample microbiological diversity is slightly different in each type of environment. While in temperate waters, the samples with a UniFracInd above the median tend to aggregate close to the median value, with the remaining values more spread below the mid point's value, in tropical waters this trend is reversed, with the samples with higher diversity than the median value more spread and those with lower than median diversity showing UniFracInd values closer to the median value. This is illustrated by the fact that the means of each type of sample (red losanges) difer by a larger margin than the medians, with samples collected in temperate waters showing a lower mean of microbial diversity index (UniFracInd) than those from tropical waters.
 In order to test whether these differences are significant we could perform a t-test. The null hypothesis would be:
 H0: There is no difference in mircobial diversity between samples collected in temperate and tropical regions.
@@ -129,25 +116,29 @@ From the histograms below, the total data is close to the normal distribution:
 ```{r}
 hist(diversity.col)
 ```
-However, the sub-sets of data corresponding to the temperate and tropical samples appear farther from the normal distribution (assumption 3).
+However, the subsets of data corresponding to the temperate and tropical samples appear farther from the normal distribution (assumption 3).
 ```{r}
-par(mfrow=c(1,2))
-hist(diversity.col[latitude.col=="temperate"])
-hist(diversity.col[latitude.col=="tropical"])
+par(mfrow = c(1,2))
+hist(diversity.col[latitude.col == "temperate"], 
+     breaks = 5,
+     main = "Diversity in temperate region",
+     xlab = "Diversity")
+hist(diversity.col[latitude.col == "tropical"], 
+     breaks = 5,
+     main = "Diversity in tropical region",
+     xlab = "Diversity")
 ```
 We can perform a normality test on these:
 ```{r}
 shapiro.test(diversity.col[latitude.col=="temperate"])
 shapiro.test(diversity.col[latitude.col=="tropical"])
 ```
-The p-value is above the recommended for this test (<0.1; [ethz R manual](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html), which means we cannot exclude the null hypothesis for the Shapiro-Wilk test that the sample is normally distributed, so we can proceed to assess whether the remaining assumptions of the t-test are met.
+The p-values are above the recommended for this test (<0.1; [ethz R manual](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html), which means we cannot exclude the null hypothesis for the Shapiro-Wilk test that the sample is normally distributed, so we can proceed to assess whether the remaining assumptions of the t-test are met.
 
 We can determine the number of samples in each group:
 ```{r}
-library(plyr)
-latitude.num.samples <- count(marine, "latitude")
-latitude.num.samples
-
+length(latitude.col[latitude.col=="temperate"])
+length(latitude.col[latitude.col=="tropical"])
 ```
 There are 20 samples in each group, which should be sufficient if the other assumptions are met.
 
@@ -163,7 +154,7 @@ Given that we can assume all t-tests assumptions are met, we can then perform a 
 t.test(diversity.col[latitude.col=="temperate"], diversity.col[latitude.col=="tropical"])
 ```
 
-The p-value of 0.1209 would indicate that the likelihood of observing the current samples if H0 is true is above the set significance level of 0.05 and hence we cannot reject the null hypothesis. From these analyses, I would conclude there is no statistically significant difference in microbial diversity at different latitudes.
+The p-value of 0.1209 would indicate that the likelihood of observing the current samples if H0 is true is above the set significance level of 0.05 and hence we cannot reject the null hypothesis. From these analyses, I would conclude there is no statistically significant difference in microbial diversity at different latitudes at the set level of significance (a=0.05).
 
 ## 2. How does microbial diversity change with time of year?
 ```{r}
@@ -181,23 +172,33 @@ marine.season.titles <- labs(title = "Microbial Density vs. Season",
 season.fill <- scale_fill_manual(values=c("#FF9900", "#6699FF"))
 
 # bring plot and formatting together
-marine.season.plot + marine.season.titles + violin.plot + add.boxplot + 
+violin_season <- marine.season.plot + marine.season.titles + violin.plot + add.boxplot + 
   add.mean + season.fill + set.plot.theme + title.axes.theme
+violin_season
+```
+```{r}
+mean(diversity.col[season.col=="Aug"])
+sd(diversity.col[season.col=="Aug"])
+mean(diversity.col[season.col=="Jan"])
+sd(diversity.col[season.col=="Jan"])
 ```
 Higher microbial diversity is observed in the August cruise than in January. The values for UniFracInd are more normally distributed around the median value than those measured by latitude. As such, median and mean values coincide, being higher in August. The spread of UniFracInd values measured in January is smaller than that seen in August.
 
 We can perform a t-test to assess if these differences are significant.
 H0: There is no difference in mircobial diversity between samples collected in Aug and Jan seasons.
-The alternative hypothesis would be:
 Ha: There is a difference in mircobial diversity between samples collected in Aug and Jan seasons.
 Significance level, a=0.05
 
-As for the latitude, we can assume that conditions 1 and 2 for a t-test are verified.
+As for the latitude, we can assume that conditions 1 and 2 (continuous variable being measured and random representative samples) for a t-test are verified.
 Normality:
 ```{r}
 par(mfrow=c(1,2))
-hist(diversity.col[season.col=="Aug"])
-hist(diversity.col[season.col=="Jan"])
+hist(diversity.col[season.col=="Aug"],
+     main="Diversity in Aug",
+     xlab="Diversity")
+hist(diversity.col[season.col=="Jan"],
+     main="Diversity in Jan",
+     xlab="Diversity")
 ```
 ```{r}
 shapiro.test(diversity.col[season.col=="Aug"])
@@ -207,8 +208,8 @@ These two groups of observations appear to be normally distributed (p>0.1).
 
 Large size sample:
 ```{r}
-season.num.samples <- count(marine, "season")
-season.num.samples
+length(season.col[season.col=="Aug"])
+length(season.col[season.col=="Jan"])
 ```
 Again, there are are 20 samples in each group, which should be sufficient for a t-test if the remaining assumptions are met.
 
@@ -225,7 +226,7 @@ t.test(diversity.col[season.col=="Aug"], diversity.col[season.col=="Jan"])
 
 This time, we obtain a p-value < 0.02, below the sgnificance level set (a=0.05). In this context, we would reject the null hypothesis that there is no difference in microbial diversity in each season, and accept the alternative hypothesis that states that there is a statistically significant difference between microbial diversity in Jan and Aug. From the violin plot, we can see that there is higher diversity in Aug than in Jan.
 
-## 3. Is there an interaction between the season, and location?
+## 3. Is there an interaction between the season and location?
 To statistically assess whether there is an interaction of season and latitude, we can fit a linear model which takes into account interactions of season and latitude and then do an analysis of variance to determine which factors better explain changes in diversity.
 
 ```{r}
@@ -233,7 +234,7 @@ To statistically assess whether there is an interaction of season and latitude, 
 corr.seas.lat <- lm(diversity.col ~ season.col * latitude.col)
 anova(corr.seas.lat)
 ```
-From the ANOVA test of the model fitted taking into acount the interaction of latitude and season on the measure microbial diversity we conclude that, as was apparent from the simpler t-tests, season has a larger impact on microbial diversity than latitude. The term acounting for interaction between season and latitude has a p-valua > 0.1, which has no significance level. This suggests that the main impact on microbial diversity comes from the season when the samples collected and that we cannot exclude the hypothesis that there is no significant interaction between season and location.
+From the ANOVA test of the model fitted taking into acount the interaction of latitude and season on the measure microbial diversity we conclude that, as was apparent from the simpler t-tests, season has a larger impact on microbial diversity than latitude. The term acounting for interaction between season and latitude has a p-valua > 0.1, which is above the 0.05 significance level. This suggests that the main impact on microbial diversity comes from the season when the samples are collected and that we cannot exclude the null hypothesis that there is no interaction between season and location.
 
 # Dataset 2: Pairwise nucleotide substitutions and RNA expression levels
 
@@ -248,7 +249,7 @@ From the ANOVA test of the model fitted taking into acount the interaction of la
 ## Data import
 No issues were observed in Excel.
 ```{r}
-luciferase <- read.table("../../labs/Assessment_1/Student_data/2018/part_2_student_1932.tdf",
+luciferase <- read.table("part_2_student_1932.tdf",
                          sep = "\t",
                          header = TRUE)
 head(luciferase) # quick check of correct data import
@@ -263,7 +264,12 @@ aa.substitutions <- luciferase$distance
 ## 1. How does the putative 'luciferase' homologue expression change with genetic distance (amino acid substitutions)?
 We can start by visualising these data using a scatter plot:
 ```{r}
-plot(aa.substitutions, luciferase.expression)
+plot(aa.substitutions, luciferase.expression,
+     main="Luciferase Expression vs. Distance",
+     xlab="Amino Acid Substitutions",
+     ylab="Expression",
+     pch=16,
+     col="steelblue")
 ```
 There appears to be no significant correlation of luciferase expression with amino acid substitutions.
 
@@ -272,14 +278,15 @@ expr.dist.model <- lm(luciferase.expression ~ aa.substitutions)
 expr.dist.model
 ```
 If we try to fit a regression to these data, we obtain the following relationship:
-luciferase.expression = 0.4529 + 0.1719 * aa.substitutions
+luciferase.expression = 0.4529 + 0.1719 * aa.substitutions + errors
 
 ```{r}
 summary(expr.dist.model)
 ```
-When we analyse the statistical parameters associated with this model, it is clear that th p-values associated with the intercept and slope of this regression are above the significance level of 0.05. The fit of the curve is also low, with an R-squared of approximately 0.1 and adjusted R-squared of approximately 0.07.
 
-There is no obvious curve that would fit the data better than the linear regression. Despite this, I have attempted to transform the data to represent expression in terms og log and log2, but it seems likely that the values presented have already been transformed in this way. I have also attempted a power of two of the distance. None of these transformations yield more promising plots than the linear regression model. As such, I would conclude that there is no statistically significant (p-value>0.05) correlation between gene expression and distance in the dataset analysed.
+When we analyse the statistical parameters associated with this model, it is clear that the p-value is above the significance level of 0.05 (P=0.08261). The fit of the curve is also low, with an R-squared of 0.1037.
+
+There is no obvious curve that would fit the data better than the linear regression. I have attempted to transform the data to represent expression in terms of log and log2, but it seems likely that the values presented have already been transformed in this way. I have also attempted a power of two of the distance. None of these transformations yield more promising plots than the linear regression model. As such, I would conclude that there is no statistically significant correlation between gene expression and distance in the dataset analysed.
 
 ## 2. Comment on whether the model assumptions are valid.
 The assumptions behind a regression are that:
@@ -287,16 +294,16 @@ The assumptions behind a regression are that:
 * the residuals are homoscedastic
 * there is a linear structure in the data
 
-As seen above, there is no statistically significant linear structure in the data. However, we can look at whther the remaining assumptions are met using the model diagnosis plots.
+As seen above, there is no statistically significant linear structure in the data. However, we can look at whether the remaining assumptions are met using the model diagnosis plots.
 
 ```{r}
 par(mfrow=c(2,2))
 plot(expr.dist.model)
 ```
-There is no obvious non-linear relationship between the residuals and the predictor (top left). The Normal Q-Q plot indicates that the residuals are normally distributed. The residuals are also randomly distributed around an approximately horizontal line in the Scale-Location plot (bottom left), which is consistent with homoscedasticity. On the final plot, Residuals vs Leverage (bottom right), there are no obvious outliers which disproportionally influence the model. All these observations are consistent with an acceptable model, if not for the low significance level of the regression obtained.
+There is no obvious non-linear relationship between the residuals and the predictor (top left). The Normal Q-Q plot indicates that the residuals are normally distributed. The residuals are also randomly distributed around an approximately horizontal line in the Scale-Location plot (bottom left), which is consistent with homoscedasticity. On the final plot, Residuals vs Leverage (bottom right), there are no obvious outliers which disproportionally influence the model. All these observations are consistent with an acceptable model, if not for the low significance level of the regression obtained and the lack of a linear structure to the data.
 
 ## 3. Assuming your model is *statistically* valid, can you guess what effect is responsible for the relationship you've found?
-If we were assume the model was statistically valid, i.e., if we had started by determining a level of significance greater than 0.05 (e.g., 0.1), this model would suggest that there was a weak, yet positive, relationship between luciferase expression and the distance to the luciferase putative homologue in *Arabidopsis thaliana*. This would suggest that this putative gene produces a limited amount of luciferase, so species in which the homologue is further away from the model organism's one are the ones where the gene may be functional.
+If we were assume the model was statistically valid, i.e., if we had observed a linear structure in our data and obtained a higher R-squared value, this model would suggest that there was a positive correlation between luciferase expression and the distance to the luciferase putative homologue in *Arabidopsis thaliana*. This would suggest that this putative gene produces a limited amount of luciferase, so species in which the homologue is further away from the model organism's one are the ones where the gene may be functional.
 
 
 # Dataset 3: HIV viral load and within-patient population dynamics
@@ -310,16 +317,15 @@ If we were assume the model was statistically valid, i.e., if we had started by 
 * relationship between population size, diversity, evolutionary distance and tissue
 
 ## Data import
-The data was imported following check on Excel. Noted that the lowest viral load is approximately 1.6 times smaller than the second lowest and that the lowest Shannon score is ~20x lower than the second lowest. 
+The data was imported following check on Excel. 
 ```{r}
 # import data from tab-delimitted file
-hiv <- read.table("../../labs/Assessment_1/Student_data/2018/part_3_student_1932.tdf",
+hiv <- read.table("part_3_student_1932.tdf",
                   sep = "\t",
                   header = TRUE)
 tail(hiv)  # quick check that data was correctly imported
 names(hiv)  # dataframe variable names
 str(hiv)  # dataframe structure
-hiv
 ```
 The data was imported correctly.
 
@@ -469,7 +475,6 @@ start.model <- lm(viral.load ~ site + cd4.level + shannon + distance + site:cd4.
 summary(start.model)
 ```
 
-The start model has a low p-value (~0.006).
 We can attempt to improve the fitting with the step function:
 ```{r}
 my.model = step(start.model,
@@ -500,18 +505,19 @@ The resulting model is the same as obtained for the start.model testing in both 
 ```{r}
 final.model <- my.model3
 summary(final.model)
+(final.model)
 ```
 
 ```{r}
 par(mfrow = c(2,2))
 plot(final.model)
 ```
-The plots for the model's residuals raise no major concerns with the normality of residual distribution and the homoscedasticity of errors.
+The plots for the model's residuals raise no concerns with the normality of residual distribution and the homoscedasticity of errors.
 
 viral.load ~ distance + site + shannon + cd4.level + shannon:cd4.level + site:shannon + distance:site
 
 According to this model, HIV viral load is best explained by taking into account:
-* distance, how much the viruses have evolved from a reference sequence. This could be seen as a measure of adaptation of the virus to better replicate in the host or the distance from a well-adapted virus;
+* distance, how much the viruses have evolved from a reference sequence. Given the viral load is negatively correlated with the distance, suggesting the larger the distance, the lower the viral load this could be seen as a fitness loss associated with the evolutionary pressure of replicating within the host;
 * site, the tissue type of the sample. This will affect the environment of replication as well as the accessbility of the site to CD4-positive cells;
 * Shannon score, a measurement of the viral population diversity: more diverse populations may have adaptive advantages in the response to the immune system or drugs. On the other hand, specific viruses can be randomly selected through bottleneck effects;
 * CD4 level, how many CD4-positive cells were found in the sample: this would be an indicator of an ongoing immune response;
