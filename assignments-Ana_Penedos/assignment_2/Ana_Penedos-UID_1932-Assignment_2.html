@@ -142,12 +142,21 @@ $(document).ready(function () {
 <div id="input-data" class="section level2">
 <h2>input data</h2>
 <pre class="r"><code>stimulation_potential = seq(-100, 40, by=10) 
-response_voltage_control = c(-70.00000,-70.00000,-70.00000,-70.00000,-70.00000,35.79871,38.75082,39.30423,39.65390,35.55835,35.66762,36.55754,39.51027,35.65274,39.17013)
-response_voltage_concN_1 = c(-70.00000,-70.00000,-70.00000,-70.00000,37.88144,35.64345,36.54319,36.18773,36.67542,38.56634,38.53102,37.73421,38.69826,38.67744,37.21896)
-response_voltage_concN_2 = c(-70.00000,-70.00000,-70.00000,37.16110,39.28471,36.57506,38.03037,39.37853,39.92131,39.01116,39.46393,36.16073,37.70418,35.88598,38.53137)
-response_voltage_concN_3 = c(-70.00000,-70.00000,36.25729,35.70035,35.61478,36.81245,37.01299,39.34139,36.59520,35.00749,37.94440,36.10611,37.15617,35.29182,35.32412)
+response_voltage_control = c(-70.00000,-70.00000,-70.00000,-70.00000,-70.00000,
+                             35.79871,38.75082,39.30423,39.65390,35.55835,
+                             35.66762,36.55754,39.51027,35.65274,39.17013)
+response_voltage_concN_1 = c(-70.00000,-70.00000,-70.00000,-70.00000,37.88144,
+                             35.64345,36.54319,36.18773,36.67542,38.56634,
+                             38.53102,37.73421,38.69826,38.67744,37.21896)
+response_voltage_concN_2 = c(-70.00000,-70.00000,-70.00000,37.16110,39.28471,
+                             36.57506,38.03037,39.37853,39.92131,39.01116,
+                             39.46393,36.16073,37.70418,35.88598,38.53137)
+response_voltage_concN_3 = c(-70.00000,-70.00000,36.25729,35.70035,35.61478,
+                             36.81245,37.01299,39.34139,36.59520,35.00749,
+                             37.94440,36.10611,37.15617,35.29182,35.32412)
 
-plot(stimulation_potential,stimulation_potential,type='n',xlab='Stimulation, mV',ylab='Excitation, mV')
+plot(stimulation_potential,stimulation_potential,
+     type='n',xlab='Stimulation, mV',ylab='Excitation, mV')
 lines(stimulation_potential,response_voltage_control)
 lines(stimulation_potential,response_voltage_concN_1,col=&quot;green&quot;)
 lines(stimulation_potential,response_voltage_concN_2,col=&quot;orange&quot;)
@@ -162,33 +171,33 @@ legend(0,-40,&quot;concentration 3&quot;,fill=&quot;red&quot;)</code></pre>
 <div id="describe-what-the-inputs-outputs-and-role-for-each-of-the-functions-predict-calculate_errors-and-fit_threshold-are." class="section level2">
 <h2>1. Describe what the inputs, outputs and role for each of the functions predict, calculate_errors and fit_threshold are.</h2>
 <pre class="r"><code>predict = function(activation_threshold,stimulation_voltage){
-  # Produces a vector of activation values (mV) based on whether the 
-  # stimulation voltage is less or equal (-70) or greater (40) than the activation threshold.
+  # Produces a vector of predicted response values (mV) based on whether 
+  # the stimulation voltage is less or equal (-70) or greater (40) than 
+  # the activation threshold.
   #
   # Args:
-  #   activation_threshold: the voltage at which the axon becomes 
+  #   activation_threshold - the voltage at which the axon becomes 
   #                         activated (numeric).
-  #   stimulation_voltage: the voltages at which the axon was stimulated 
+  #   stimulation_voltage - the voltages at which the axon was stimulated 
   #                        (vector of numeric values).
   #
-  # Returns: vector of same length as the stimulation_voltage argument
-  #          
-  #
+  # Returns: 
+  #   Vector of same length as the stimulation_voltage vector argument
+  #   with value -70 when stimulation &lt;= threshold and 40 when &gt; threshold.
   
   # produces a vector of '-70's the same length as the variable
   # 'stimulation_voltage'
   activation = rep(-70,length(stimulation_voltage))
   # Values in position x of activation are changed based on 
   # the value in position x of stimulation_voltage.
-  # When stimulation_voltage &lt; activation_threshold, value is left at -70.
-  # When stimulation_voltage &gt; activation_threshold, value is set to 40.
+  # When stimulation_voltage &lt;= activation_threshold, value is left at -70
+  # When stimulation_voltage &gt; activation_threshold, value is set to 40
   activation[stimulation_voltage&gt;activation_threshold] = 40
-  # returns vector of same length as the stimulation_voltage vector argument
-  # with value -70 when stimulation &lt;= threshold and 40 when &gt; threshold.
+  # returns vector of predicted values
   return(activation)
 }
 
-# My checking of the predict function
+# checking of the predict function
 predict(-80, -90)</code></pre>
 <pre><code>## [1] -70</code></pre>
 <pre class="r"><code>predict(-80, -80)</code></pre>
@@ -211,7 +220,7 @@ test_a_vector</code></pre>
 <pre class="r"><code>test_rep[test_a_vector &gt; 5] = 40
 test_rep</code></pre>
 <pre><code>##  [1] -70 -70 -70 -70 -70  40  40  40  40  40</code></pre>
-<p>The ‘predict’ function takes an activation threshold and a vestor of stimulations used and produces a vector of the same length of the vector containing the voltages of stimulation used, with -70 in the positions corresponding to stimulation under the threshold and 40 in those where the stimulation voltage was above the threshold.</p>
+<p>The <code>predict</code> function takes an activation threshold and a vector of stimulations used and produces a vector of the same length of the stimulation vector, with -70 in the positions corresponding to stimulation under the threshold and 40 in those where the stimulation voltage was above the threshold.</p>
 <pre class="r"><code>calculate_errors = function(predicted, observed){
   # Calculates residual sum of squares between observed and predicted values.
   #
@@ -226,17 +235,18 @@ test_rep</code></pre>
   total_errors = sum((observed - predicted)^2)
   return(total_errors)
 }</code></pre>
-<p>The “calculate_errors” function calculates the total sum of squares (sum((observed - expected)^2)) estimating the total deviation of a vector of measured values from a vector of predicted values.</p>
-<pre class="r"><code>fit_threshold = function(input_values_stimulation,input_values_response,threshold){
-  # Calculates the fit error using observed response values and response values 
-  # predicted from stimulation values and threshold.
+<p>The <code>calculate_errors</code> function calculates the residual sum of squares <span class="math display">\[ sum((observed - predicted)^2) \]</span> estimating the total deviation of a vector of measured values from a vector of predicted values.</p>
+<pre class="r"><code>fit_threshold = function(input_values_stimulation,
+                         input_values_response,
+                         threshold){
+  # Calculates the fit error using observed response values and response 
+  # values predicted from stimulation values and threshold.
   #
   # Args:
-  #    input_values_stimulation - vector of numeric values for stimulation 
-  #                voltage used.
-  #    input_values_response - vector of numeric values for response 
-  #                measured.
-  #    threshold - activation threshold for the neuron (numeric)
+  #    input_values_stimulation - stimulation voltages used 
+  #                               (vector of numeric values)
+  #    input_values_response - responses measured (vector of numeric values)
+  #    threshold - activation threshold for the axon (numeric)
   #
   # Returns: 
   #    Residual sum of squares between 'input_values_response' and predicted 
@@ -248,15 +258,15 @@ test_rep</code></pre>
   fit_errors = calculate_errors(predicted_values,input_values_response)
   return(fit_errors)
 }</code></pre>
-<p>The ‘fit_threshold’ function takes a vector of the stimulation voltages, a vector of observed responses and a value for threshold. It uses the ‘predict’ function to calculate a vector of predicted responses and the ‘calculate_errors’ function to determine the total sum of squares between the response values and the predicted response vector obatined.</p>
+<p>The <code>fit_threshold</code> function takes a vector of the stimulation voltages, a vector of observed responses and a value for threshold. It uses the <code>predict</code> function to calculate a vector of predicted responses and the <code>calculate_errors</code> function to determine the total sum of squares between the response values and the predicted response vector obatined.</p>
 </div>
 <div id="how-is-the-data-modelled" class="section level2">
 <h2>2. How is the data modelled?</h2>
-<p>The data is modelled based on a step function. Before the stimulation voltage reaches an activation threshold, response voltage values take a negative value of -70 mV. Once the activation threshold is reached, response values are equal to 40 mV.</p>
+<p>The data is modelled based on a step function. When the stimulation voltage take values less than or euqal to an activation threshold, response voltage values take a negative value of -70 mV. After the activation threshold is reached, response values are equal to 40 mV.</p>
 </div>
 <div id="how-many-degrees-of-freedom-are-present-in-a-the-model-and-b-the-residuals" class="section level2">
 <h2>3. How many degrees of freedom are present in (a) the model, and (b) the residuals?</h2>
-<p>There are 10 data points, hence we start with 10 degrees of freedom. The model sets a threshold value, hence using a degree of freedom. Hence there are 9 degrees of freedom left for the residuals.</p>
+<p>There are 10 data points, hence we start with 10 degrees of freedom (no total or mean value is calculated in the context of the modelling). The model sets a threshold value, hence using a degree of freedom. Hence there are 9 degrees of freedom left for the residuals.</p>
 </div>
 <div id="describe-what-happens-when-the-code-is-executed-in-statistical-terms." class="section level2">
 <h2>4. Describe what happens when the code is executed, in statistical terms.</h2>
@@ -268,7 +278,9 @@ test_rep</code></pre>
 fitted_threshold = runif(1,-100,40)
 # Calculate the error between the response values predicted with the fitted
 # threshold
-error = fit_threshold(stimulation_potential,response_voltage_control,fitted_threshold)
+error = fit_threshold(stimulation_potential,
+                      response_voltage_control,
+                      fitted_threshold)
 
 # 20 iterations
 for(i in 1:20){
@@ -276,7 +288,9 @@ for(i in 1:20){
   # between -100 and 40
   new_threshold = runif(1,-100,40)
   # calculate the error associated to the new threshold
-  new_error     = fit_threshold(stimulation_potential,response_voltage_control,new_threshold)
+  new_error     = fit_threshold(stimulation_potential,
+                                response_voltage_control,
+                                new_threshold)
   if(new_error &lt; error){
     # keep the new threshold and error if improvement from previous
     fitted_threshold = new_threshold
@@ -285,25 +299,25 @@ for(i in 1:20){
 }
 
 fitted_threshold</code></pre>
-<pre><code>## [1] -42.84141</code></pre>
+<pre><code>## [1] -57.50556</code></pre>
 <pre class="r"><code>error</code></pre>
-<pre><code>## [1] 11265.71</code></pre>
+<pre><code>## [1] 89.99066</code></pre>
 <p>An initial threshold is randomly generated from a uniform distribution that can take values between -100 and 40. The initial error is then calculated between the observed values and the predicted responses from the random threshold and stimulation values. The process is repeated over 20 iterations and if a lower error is found between the predicted values for the random threshold and the response values, the script keeps the new threshold and error values obtained. At the end of the 20 iterations, the threshold associated with the smallest error calculated and the corresponding error are returned.</p>
 </div>
 <div id="how-could-you-improve-the-optimisation" class="section level2">
 <h2>6. How could you improve the optimisation?</h2>
 <ul>
 <li>More iterations: the simplest (though not more efficient) way to improve the optimisation is to simply increase the number of iterations.</li>
-<li>Use a normal distribution around the fitted_threshold with lower error: this way, when a better threshold is found (i.e., one with lower residual sum of squares) the new proposed threshold will more likely be closer to the improved value. By always picking from a uniform distribution, the process of optimisation is effectively restarted in each iteration, with not <span class="citation">@learning</span>@ from prior cycles.</li>
-<li>Use several different start points: if we implemented the previous step (centering new guesses around the best guess so far), we would risk finding a local optimum rather than the global one, so it would be safer to implement an outer loop picking values from a uniform distribution and an inner loop selecting thresholds from a normal distribution. In this way, even if one of the inner loops returned a local optimum, we are more likely to find the optimal threshold through one of the other external loops.</li>
-<li>Improve start value: instead of randomly picking a random initial value from a uniform distribution, we could take an educated guess that the threshold would fall closer to the mean stimulation voltages used.</li>
+<li>Use a normal distribution around the fitted_threshold with lower error: this way, when a better threshold is found (i.e., one with lower residual sum of squares) the new proposed threshold will more likely be closer to the improved value. By always picking from a uniform distribution, the process of optimisation is effectively restarted in each iteration, with no “learning” from prior cycles.</li>
+<li>Use several different start points: if we implemented the previous step (centering new guesses around the best guess so far), we would risk finding a local optimum rather than the global one, so it would be safer to implement an outer loop picking values from a uniform distribution and an inner loop selecting thresholds from a normal distribution. In this way, even if one of the inner loops returned a local optimum, we are more likely to find the optimal threshold through one of the other loops.</li>
+<li>Improve start value: instead of randomly picking a random initial value from a uniform distribution, we could take an educated guess that the threshold would fall closer to the median stimulation voltages used.</li>
 </ul>
 </div>
 <div id="how-would-you-modify-the-code-to" class="section level2">
 <h2>How would you modify the code to:</h2>
 <div id="a-fit-the-data-given-under-the-three-experimental-nicotine-treatments-and" class="section level3">
 <h3>a) fit the data given under the three experimental nicotine treatments and</h3>
-<p>We could simply replace the “response_voltage_control” argument given to the “fit_threshold” function in the optimisation by “response_voltage_concN_1”, “response_voltage_concN_2” and “response_voltage_concN_3”. To aautomate this and avoid substitution mistakes or repeating the same lines of code, we could enclose the optimisation into a loop iterating through the 4 sets of responses measured (control and concentrations 1 to 3 of nicotine), where each set of responses is attributed to a “observed_response” variable that is then used within the optimisation as an argument for the “fit_threshold” function.</p>
+<p>We could simply replace the “response_voltage_control” argument given to the <code>fit_threshold</code> function in the optimisation by “response_voltage_concN_1”, “response_voltage_concN_2” and “response_voltage_concN_3”. To aautomate this and avoid substitution mistakes or repeating the same lines of code, we could enclose the optimisation into a loop iterating through the 4 sets of responses measured (control and concentrations 1 to 3 of nicotine), where each set of responses is attributed to a “observed_response” variable that is then used within the optimisation as an argument for the <code>fit_threshold</code> function.</p>
 </div>
 <div id="b-compare-the-goodness-of-fit-amongst-these-fitted-models-to-determine-whether-each-nicotine-treatment-lowers-the-activation-threshold-compared-to-the-control-treatment" class="section level3">
 <h3>b) compare the goodness of fit amongst these fitted models to determine whether each nicotine treatment lowers the activation threshold, compared to the control treatment</h3>
@@ -317,18 +331,62 @@ fitted_threshold</code></pre>
 </div>
 <div id="part-b" class="section level1">
 <h1>Part B</h1>
-<p>We have modified your code so that it prints each fit out to a logfile as the optimisation progresses. The logfiles are called fit_01, fit_02… etc and print out each time optimisation loop runs. The final fitted_threshold and errors will be written to another .csv, called final.csv. We have also modified the code to pass a user-specified random seed to the script for setting the initial value for fitted_threshold. Pseudocode for a Docker container to run that code is given:</p>
-<hr />
-<p># Docker R base image FROM r-base</p>
-<p>COPY . /usr/local/src/myscripts WORKDIR /usr/local/src/myscripts</p>
-<p>CMD [“Rscript”, “activation-thresholds.R”] *** ## 1. How would we use this code to run our analysis on a grid? Outline what steps we should take. 1. Build our image: from the directory containing the Dockerfile and the scripts we wish to include in our image, we would build an image using <code>docker build -t activationContainer .</code>. The <code>-t</code> option can be used to give our image an informative name. 2. Getting the image: we could either i) simply copy the image into a directory on the grid or ii) upload it to a remote repository, in which case we would ii1) tag the image using <code>docker tag activationContainer some_user/some_repository:activationContainer</code> ii2) login to docker hub with <code>docker login</code> ii3) upload our image with <code>docker push some_username/some_repository:activationContainer</code> ii4) login to the grid and obtain the image using <code>module load singularity</code> (or <code>module load docker</code>) and then <code>singularity pull docker://some_username/some_repository:activationContainer</code> (or <code>docker pull some_username/some_repository:activationContainer</code>); 3. Running the container: either by (i) directly running <code>singularity run activationContainer.img input_data.csv</code> (or <code>docker run activationContainer.img input_data.csv</code>) or (ii) creating a jobfile like the one shown in question 2 and submitting it to a job queue.</p>
-<hr />
-<p>#$ -cwd #$ -S /bin/bash #$ -j y #$ -pe smp 1 #$ -l h_vmem=2G module load singularity singularity run activationContainer.img input_data.csv *** ## 2. How would you rewrite this jobfile to achieve the following: ### a) Move the final outputs to a directory (../output)? I would modify my R script to accept an output directory given by a -o option (-o results_directory) and then change the last line of the jobfile to: singularity run -B ../output:/results_directory activationContainer.img input_data.csv -o /results_directory ### b) Change random seed (set with the -p [some integer] argument)? I would add a line of code generating a random integer from the shell and storing it as a variable before or after loading singularity: <code>seed=$RANDOM</code> I would then modify the line running singularity to: <code>singularity run -B ../output:/results_directory activationContainer.img input_data.csv -o /results_directory -p $seed</code> ### c) Run as an array job, with 42 replicates? I would add the following two lines to the jobfile setup section:</p>
+<ul>
+<li>code modified to print fits to logfiles (fit_01, fit_02, …) at each iteration</li>
+<li>fitted_threshold and errors saved to final.csv</li>
+<li>use user-specified random seed to set initial threshold</li>
+</ul>
+<p>Dockerfile:</p>
+<pre><code># Docker R base image
+FROM r-base
+
+COPY . /usr/local/src/myscripts
+WORKDIR /usr/local/src/myscripts
+
+CMD [&quot;Rscript&quot;, &quot;activation-thresholds.R&quot;]</code></pre>
+<div id="how-would-we-use-this-code-to-run-our-analysis-on-a-grid-outline-what-steps-we-should-take." class="section level2">
+<h2>1. How would we use this code to run our analysis on a grid? Outline what steps we should take.</h2>
+<ol style="list-style-type: decimal">
+<li>Build our image: from the directory containing the Dockerfile and the scripts we wish to include in our image, we would build an image using <code>docker build -t activationContainer .</code>. The <code>-t</code> option can be used to give our image an informative name.</li>
+<li>Getting the image: we could either
+<ol style="list-style-type: lower-roman">
+<li>simply copy the image into a directory on the grid or</li>
+<li>upload it to a remote repository, in which case we would: ii1) tag the image using <code>docker tag activationContainer some_user/some_repository:activationContainer</code>; ii2) login to docker hub with <code>docker login</code>; ii3) upload our image with <code>docker push some_username/some_repository:activationContainer</code>; ii4) login to the grid and obtain the image using <code>module load singularity</code> (or <code>module load docker</code>) and then <code>singularity pull docker://some_username/some_repository:activationContainer</code> (or <code>docker pull some_username/some_repository:activationContainer</code>);</li>
+</ol></li>
+<li>Running the container: either by (i) directly running <code>singularity run activationContainer.img input_data.csv</code> (or <code>docker run activationContainer.img input_data.csv</code>) or (ii) creating a jobfile like the one shown in question 2 and submitting it to a job queue.</li>
+</ol>
+<p>Jobfile:</p>
+<pre><code>#$ -cwd
+#$ -S /bin/bash
+#$ -j y
+#$ -pe smp 1
+#$ -l h_vmem=2G
+module load singularity
+singularity run activationContainer.img input_data.csv</code></pre>
+</div>
+<div id="how-would-you-rewrite-this-jobfile-to-achieve-the-following" class="section level2">
+<h2>2. How would you rewrite this jobfile to achieve the following:</h2>
+<div id="a-move-the-final-outputs-to-a-directory-..output" class="section level3">
+<h3>a) Move the final outputs to a directory (../output)?</h3>
+<p>I would modify my R script to accept an output directory given by a <code>-o</code> option (e.g., <code>-o results_directory</code>) and then change the last line of the jobfile to: <code>singularity run -B ../output:/results_directory activationContainer.img input_data.csv -o /results_directory</code></p>
+</div>
+<div id="b-change-random-seed-set-with-the--p-some-integer-argument" class="section level3">
+<h3>b) Change random seed (set with the -p [some integer] argument)?</h3>
+<p>I would add a line of code generating a random integer from the shell and storing it as a variable before or after loading singularity: <code>seed=$RANDOM</code> I would then modify the line running singularity to:</p>
+<pre><code>singularity run -B ../output:/results_directory activationContainer.img \
+input_data.csv -o /results_directory -p $seed</code></pre>
+</div>
+<div id="c-run-as-an-array-job-with-42-replicates" class="section level3">
+<h3>c) Run as an array job, with 42 replicates?</h3>
+<p>I would add the following two lines to the jobfile setup section:</p>
 <pre><code>#$ -t 1-42  # sets an array job with 42 tasks
 #$ -tc 42  # determines that all tasks can happen concurrently</code></pre>
 <p>In order to prevent the overwriting of outputs when multiple tasks are run, I would need to slightly modify the script and the singularity run command:</p>
-<pre><code>mkdir ../output/results_directory-$seed
-singularity run -B ../output/results_directory-$seed:/results_directory activationContainer.img input_data.csv -o /results_directory -p $seed</code></pre>
+<pre><code>mkdir ../output/results_directory_$seed
+singularity run -B ../output/results_directory_$seed:/results_directory \
+activationContainer.img input_data.csv -o /results_directory -p $seed</code></pre>
+</div>
+</div>
 </div>
 
 

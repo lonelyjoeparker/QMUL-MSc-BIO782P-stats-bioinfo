@@ -2,15 +2,19 @@
 title: "BIO782P - Week 1 Assignment"
 author: "Ana Penedos (UID 1932)"
 date: "14th December 2018"
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-# packages used:
-install.packages("ggplot2")
-install.packages("car")
 ```
+
+packages used:
+ggplot2
+car
+
 
 # Dataset 1: Marine microbial diversity
 
@@ -24,12 +28,12 @@ install.packages("car")
 
 ## Data import
 The data was imported into Microsoft Excel and checked for obvious issues such as missing values. As none were found, we can import it into R.
+
 ```{r}
 marine <- read.table("part_1_student_1932.tdf", 
                      sep = "\t",
                      header = TRUE)
 head(marine) # check if there are obvious issues with data import
-names(marine) # get the names of data frame variables
 str(marine) # check number of observations, variables and their type
 ```
 
@@ -43,6 +47,7 @@ season.col <- marine$season
 ```
 
 ## 1. How does microbial diversity change with latitude?
+
 ```{r}
 library(ggplot2)
 # set up plot-specific elements
@@ -88,10 +93,10 @@ title.axes.theme <- theme(plot.title = title.style,
                           legend.position="none")
 
 # bring plot and formatting together
-violin_latitude <- marine.latitude.plot + marine.latitude.titles + violin.plot + add.boxplot + 
+marine.latitude.plot + marine.latitude.titles + violin.plot + add.boxplot + 
   add.mean + latitude.fill + set.plot.theme + title.axes.theme
-violin_latitude
 ```
+
 ```{r}
 mean(diversity.col[latitude.col=="temperate"])
 sd(diversity.col[latitude.col=="temperate"])
@@ -106,17 +111,21 @@ The alternative hypothesis would be:
 Ha: There is a difference in mircobial diversity between samples collected in temperate and tropical regions.
 Significance level, a=0.05
 t-test assumptions:
-1. The data is measured in a continuous scale - UniFracInd is a continuous variable;
-2. The samples collected are random and representative - 20l of water from different locations;
-3. The data is normally distributed;
-4. Large size sample;
-5. Homogeneous variance.
+
+1. The data is measured in a continuous scale - UniFracInd is a continuous variable
+2. The samples collected are random and representative - 20l of water from different locations
+3. The data is normally distributed
+4. Large size sample
+5. Homogeneous variance
 
 From the histograms below, the total data is close to the normal distribution:
+
 ```{r}
 hist(diversity.col)
 ```
+
 However, the subsets of data corresponding to the temperate and tropical samples appear farther from the normal distribution (assumption 3).
+
 ```{r}
 par(mfrow = c(1,2))
 hist(diversity.col[latitude.col == "temperate"], 
@@ -128,18 +137,23 @@ hist(diversity.col[latitude.col == "tropical"],
      main = "Diversity in tropical region",
      xlab = "Diversity")
 ```
+
 We can perform a normality test on these:
+
 ```{r}
 shapiro.test(diversity.col[latitude.col=="temperate"])
 shapiro.test(diversity.col[latitude.col=="tropical"])
 ```
+
 The p-values are above the recommended for this test (<0.1; [ethz R manual](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/shapiro.test.html), which means we cannot exclude the null hypothesis for the Shapiro-Wilk test that the sample is normally distributed, so we can proceed to assess whether the remaining assumptions of the t-test are met.
 
 We can determine the number of samples in each group:
+
 ```{r}
 length(latitude.col[latitude.col=="temperate"])
 length(latitude.col[latitude.col=="tropical"])
 ```
+
 There are 20 samples in each group, which should be sufficient if the other assumptions are met.
 
 Homoscedasticity of variance can be tested with Levene's test, which is a variance homogeneity test that can be used when there is a slight departure from normality [R cookbook](http://www.cookbook-r.com/Statistical_analysis/Homogeneity_of_variance/):
@@ -157,6 +171,7 @@ t.test(diversity.col[latitude.col=="temperate"], diversity.col[latitude.col=="tr
 The p-value of 0.1209 would indicate that the likelihood of observing the current samples if H0 is true is above the set significance level of 0.05 and hence we cannot reject the null hypothesis. From these analyses, I would conclude there is no statistically significant difference in microbial diversity at different latitudes at the set level of significance (a=0.05).
 
 ## 2. How does microbial diversity change with time of year?
+
 ```{r}
 # set up plot-specific elements
 # ggplot object plotting UniFracInd against season
@@ -172,16 +187,17 @@ marine.season.titles <- labs(title = "Microbial Density vs. Season",
 season.fill <- scale_fill_manual(values=c("#FF9900", "#6699FF"))
 
 # bring plot and formatting together
-violin_season <- marine.season.plot + marine.season.titles + violin.plot + add.boxplot + 
+marine.season.plot + marine.season.titles + violin.plot + add.boxplot + 
   add.mean + season.fill + set.plot.theme + title.axes.theme
-violin_season
 ```
+
 ```{r}
 mean(diversity.col[season.col=="Aug"])
 sd(diversity.col[season.col=="Aug"])
 mean(diversity.col[season.col=="Jan"])
 sd(diversity.col[season.col=="Jan"])
 ```
+
 Higher microbial diversity is observed in the August cruise than in January. The values for UniFracInd are more normally distributed around the median value than those measured by latitude. As such, median and mean values coincide, being higher in August. The spread of UniFracInd values measured in January is smaller than that seen in August.
 
 We can perform a t-test to assess if these differences are significant.
@@ -191,6 +207,7 @@ Significance level, a=0.05
 
 As for the latitude, we can assume that conditions 1 and 2 (continuous variable being measured and random representative samples) for a t-test are verified.
 Normality:
+
 ```{r}
 par(mfrow=c(1,2))
 hist(diversity.col[season.col=="Aug"],
@@ -200,6 +217,7 @@ hist(diversity.col[season.col=="Jan"],
      main="Diversity in Jan",
      xlab="Diversity")
 ```
+
 ```{r}
 shapiro.test(diversity.col[season.col=="Aug"])
 shapiro.test(diversity.col[season.col=="Jan"])
@@ -207,19 +225,24 @@ shapiro.test(diversity.col[season.col=="Jan"])
 These two groups of observations appear to be normally distributed (p>0.1).
 
 Large size sample:
+
 ```{r}
 length(season.col[season.col=="Aug"])
 length(season.col[season.col=="Jan"])
 ```
+
 Again, there are are 20 samples in each group, which should be sufficient for a t-test if the remaining assumptions are met.
 
 Homoscedasticity:
+
 ```{r}
 leveneTest(diversity.col ~ season.col)
 ```
+
 The probability of observing the current variances in the two groups if they are homoscedastic is very high (>0.7) by Levene's test, hence we can assume there is homogeneity in the variances.
 
 We can thus perform a t-test:
+
 ```{r}
 t.test(diversity.col[season.col=="Aug"], diversity.col[season.col=="Jan"])
 ```
@@ -248,6 +271,7 @@ From the ANOVA test of the model fitted taking into acount the interaction of la
 
 ## Data import
 No issues were observed in Excel.
+
 ```{r}
 luciferase <- read.table("part_2_student_1932.tdf",
                          sep = "\t",
@@ -256,6 +280,7 @@ head(luciferase) # quick check of correct data import
 names(luciferase) # check names of columns for dataset
 str(luciferase) # check that factors and variables were assigned correctly
 ```
+
 ```{r}
 # simplify dataframe references
 luciferase.expression <- luciferase$expression_fold
@@ -263,6 +288,7 @@ aa.substitutions <- luciferase$distance
 ```
 ## 1. How does the putative 'luciferase' homologue expression change with genetic distance (amino acid substitutions)?
 We can start by visualising these data using a scatter plot:
+
 ```{r}
 plot(aa.substitutions, luciferase.expression,
      main="Luciferase Expression vs. Distance",
@@ -271,12 +297,14 @@ plot(aa.substitutions, luciferase.expression,
      pch=16,
      col="steelblue")
 ```
+
 There appears to be no significant correlation of luciferase expression with amino acid substitutions.
 
 ```{r}
 expr.dist.model <- lm(luciferase.expression ~ aa.substitutions)
 expr.dist.model
 ```
+
 If we try to fit a regression to these data, we obtain the following relationship:
 luciferase.expression = 0.4529 + 0.1719 * aa.substitutions + errors
 
@@ -290,6 +318,7 @@ There is no obvious curve that would fit the data better than the linear regress
 
 ## 2. Comment on whether the model assumptions are valid.
 The assumptions behind a regression are that:
+
 * the errors are normally distributed
 * the residuals are homoscedastic
 * there is a linear structure in the data
@@ -300,10 +329,11 @@ As seen above, there is no statistically significant linear structure in the dat
 par(mfrow=c(2,2))
 plot(expr.dist.model)
 ```
+
 There is no obvious non-linear relationship between the residuals and the predictor (top left). The Normal Q-Q plot indicates that the residuals are normally distributed. The residuals are also randomly distributed around an approximately horizontal line in the Scale-Location plot (bottom left), which is consistent with homoscedasticity. On the final plot, Residuals vs Leverage (bottom right), there are no obvious outliers which disproportionally influence the model. All these observations are consistent with an acceptable model, if not for the low significance level of the regression obtained and the lack of a linear structure to the data.
 
 ## 3. Assuming your model is *statistically* valid, can you guess what effect is responsible for the relationship you've found?
-If we were assume the model was statistically valid, i.e., if we had observed a linear structure in our data and obtained a higher R-squared value, this model would suggest that there was a positive correlation between luciferase expression and the distance to the luciferase putative homologue in *Arabidopsis thaliana*. This would suggest that this putative gene produces a limited amount of luciferase, so species in which the homologue is further away from the model organism's one are the ones where the gene may be functional.
+If we were assume the model was statistically valid, i.e., if we had observed a linear structure in our data and obtained a higher R-squared value, this model would suggest that there was a positive correlation between luciferase expression and the distance to the luciferase putative homologue in *Arabidopsis thaliana*. Given this is an unexpected finding, I would first double-check the data (e.g., contamination in the RNA seq run or samples). If no issues were found in the data, the positive correlation would suggest that this putative gene produces a limited amount of luciferase, so species in which the homologue is further away from the model organism's one are the ones where the gene may be upregulated.
 
 
 # Dataset 3: HIV viral load and within-patient population dynamics
@@ -318,6 +348,7 @@ If we were assume the model was statistically valid, i.e., if we had observed a 
 
 ## Data import
 The data was imported following check on Excel. 
+
 ```{r}
 # import data from tab-delimitted file
 hiv <- read.table("part_3_student_1932.tdf",
@@ -327,6 +358,7 @@ tail(hiv)  # quick check that data was correctly imported
 names(hiv)  # dataframe variable names
 str(hiv)  # dataframe structure
 ```
+
 The data was imported correctly.
 
 ```{r}
@@ -339,6 +371,7 @@ distance <- hiv$score_distance
 ```
 
 ## Fit a model explaining viral load in terms of the other variables, using any combination of variables you see fit, and any model selection procedure
+
 * The rows in the data table are in chronological order
 * Likelihood of CD4 cell penetration into CNS may vary between patients
 
@@ -349,25 +382,27 @@ distance <- hiv$score_distance
 * distance to ref env seq
 
 We can start by performing a quick visualisation of the data to get a sense of the most relevant variables.
+
 ```{r}
 par(mfrow=c(2, 2))
 plot(cd4.level, viral.load,
-     main = "Viral Load vs. CD4 level",
+     main = "A. Viral Load vs. CD4 level",
      xlab = "CD4 level",
      ylab = "viral load")
 plot(site, viral.load,
-     main = "Viral Load vs. Tissue",
+     main = "B. Viral Load vs. Tissue",
      xlab = "tissue",
      ylab = "viral load")
 plot(shannon, viral.load,
-     main = "Viral Load vs. Population Diversity",
+     main = "C. Viral Load vs. Population Diversity",
      xlab = "shannon",
      ylab = "viral load")
 plot(distance, viral.load,
-     main = "Viral Load vs. Distance to Ref",
+     main = "D. Viral Load vs. Distance to Ref",
      xlab = "distance",
      ylab = "viral load")
 ```
+
 The viral load appears to be higher when the level of CD4-positive cells is higher. When the samples are collected from the spinal cord, the values for viral load have a lower median than for brain biopsies. I cannot detect a clear relationship between viral load and either the Shannon measurement of population diversity or the distance to a reference sequence.
 
 We can look at the combined effects of CD4 levels and tissue on viral load.
@@ -375,19 +410,19 @@ We can look at the combined effects of CD4 levels and tissue on viral load.
 ```{r}
 par(mfrow=c(2, 2))
 plot(cd4.level[site=="brain"], viral.load[site=="brain"],
-     main = "Viral Load in Brain",
+     main = "A. Viral Load in Brain",
      xlab = "CD4 level",
      ylab = "viral load")
 plot(cd4.level[site=="spinalCord"], viral.load[site=="spinalCord"],
-     main = "Viral Load in Spinal Cord",
+     main = "B. Viral Load in Spinal Cord",
      xlab = "CD4 level",
      ylab = "viral load")
 plot(site[cd4.level=="hi"], viral.load[cd4.level=="hi"],
-     main = "Viral Load for High CD4 level",
+     main = "C. Viral Load for High CD4 level",
      xlab = "tissue",
      ylab = "viral load")
 plot(site[cd4.level=="lo"], viral.load[cd4.level=="lo"],
-     main = "Viral Load for Low CD4 level",
+     main = "D. Viral Load for Low CD4 level",
      xlab = "tissue",
      ylab = "viral load")
 ```
@@ -430,19 +465,23 @@ plot(distance[cd4.level=="lo"], viral.load[cd4.level=="lo"],
 
 ```{r}
 par(mfrow=c(2, 2))
-plot(shannon[site=="brain"][cd4.level=="hi"], viral.load[site=="brain"][cd4.level=="hi"],
+plot(shannon[site=="brain"][cd4.level=="hi"], 
+     viral.load[site=="brain"][cd4.level=="hi"],
      main = "Viral Load (Brain/Hi)\nvs. Shannon",
      xlab = "shannon",
      ylab = "viral load")
-plot(shannon[site=="spinalCord"][cd4.level=="hi"], viral.load[site=="spinalCord"][cd4.level=="hi"],
+plot(shannon[site=="spinalCord"][cd4.level=="hi"], 
+     viral.load[site=="spinalCord"][cd4.level=="hi"],
      main = "Viral Load (SC/Hi)\nvs. Shannon",
      xlab = "shannon",
      ylab = "viral load")
-plot(shannon[site=="brain"][cd4.level=="lo"], viral.load[site=="brain"][cd4.level=="lo"],
+plot(shannon[site=="brain"][cd4.level=="lo"], 
+     viral.load[site=="brain"][cd4.level=="lo"],
      main = "Viral Load (Brain/Lo)\nvs. Shannon",
      xlab = "shannon",
      ylab = "viral load")
-plot(shannon[site=="spinalCord"][cd4.level=="lo"], viral.load[site=="spinalCord"][cd4.level=="lo"],
+plot(shannon[site=="spinalCord"][cd4.level=="lo"], 
+     viral.load[site=="spinalCord"][cd4.level=="lo"],
      main = "Viral Load (SC/Lo)\nvs. distance",
      xlab = "shannon",
      ylab = "viral load")
@@ -450,50 +489,58 @@ plot(shannon[site=="spinalCord"][cd4.level=="lo"], viral.load[site=="spinalCord"
 
 ```{r}
 par(mfrow=c(2, 2))
-plot(distance[site=="brain"][cd4.level=="hi"], viral.load[site=="brain"][cd4.level=="hi"],
+plot(distance[site=="brain"][cd4.level=="hi"], 
+     viral.load[site=="brain"][cd4.level=="hi"],
      main = "Viral Load (Brain/Hi)\nvs. distance",
      xlab = "distance",
      ylab = "viral load")
-plot(distance[site=="spinalCord"][cd4.level=="hi"], viral.load[site=="spinalCord"][cd4.level=="hi"],
+plot(distance[site=="spinalCord"][cd4.level=="hi"], 
+     viral.load[site=="spinalCord"][cd4.level=="hi"],
      main = "Viral Load (SC/Hi)\nvs. distance",
      xlab = "distance",
      ylab = "viral load")
-plot(distance[site=="brain"][cd4.level=="lo"], viral.load[site=="brain"][cd4.level=="lo"],
+plot(distance[site=="brain"][cd4.level=="lo"], 
+     viral.load[site=="brain"][cd4.level=="lo"],
      main = "Viral Load (Brain/Lo)\nvs. distance",
      xlab = "distance",
      ylab = "viral load")
-plot(distance[site=="spinalCord"][cd4.level=="lo"], viral.load[site=="spinalCord"][cd4.level=="lo"],
+plot(distance[site=="spinalCord"][cd4.level=="lo"], 
+     viral.load[site=="spinalCord"][cd4.level=="lo"],
      main = "Viral Load (SC/Lo)\nvs. distance",
      xlab = "distance",
      ylab = "viral load")
 ```
+
 The relationship between population diversity or distance to the reference sequence to the viral load determined appears to depend on the site of sampling or the level of CD4-positive cells.
 We could then fit a model that takes into consideration the interaction between tissue and CD4 level and then the remaining, non-interacting, variables of Shannon and distance.
 Our start model could be the following:
+
 ```{r}
 start.model <- lm(viral.load ~ site + cd4.level + shannon + distance + site:cd4.level)
 summary(start.model)
 ```
 
 We can attempt to improve the fitting with the step function:
+
 ```{r}
 my.model = step(start.model,
                 scope=c(lower=~site,
                         upper=~site * cd4.level * shannon * distance),
                 direction="both")
-
 ```
 
 It looks like the interaction of the Shannon score and CD4 level contribute to a lower AIC.
 This would suggest that the interaction between population diversity and the presence of CD4-positive cells have an effect on the HIV viral load. This seems to work intuitively, so I will keep this interaction in the model. On the other hand, it appears that population diversity (Shannon) on its ownn is not good at explaining viral load, so we can drop the term from the model.
 
 If we were to use the final model as a start for a backwards step optimisation we could find if we can drop some of these factors to simplify the model.
+
 ```{r}
 my.model2 <- step(my.model,
                   direction="backward")
 ```
 No terms to remove.
 From the stepwise optimisation in both directions it looked like the cd4.level:shannon term was the one that led to the biggest reduction in AIC. I can try to start building a model from this term only.
+
 ```{r}
 my.model3 <- step(lm(viral.load ~ cd4.level:shannon),
                   scope = ~site * cd4.level * shannon * distance,
@@ -505,18 +552,19 @@ The resulting model is the same as obtained for the start.model testing in both 
 ```{r}
 final.model <- my.model3
 summary(final.model)
-(final.model)
 ```
 
 ```{r}
 par(mfrow = c(2,2))
 plot(final.model)
 ```
+
 The plots for the model's residuals raise no concerns with the normality of residual distribution and the homoscedasticity of errors.
 
-viral.load ~ distance + site + shannon + cd4.level + shannon:cd4.level + site:shannon + distance:site
+viral.load ~ distance + site + shannon + cd4.level + shannon:cd4.level + site:shannon + distance:site + errors
 
 According to this model, HIV viral load is best explained by taking into account:
+
 * distance, how much the viruses have evolved from a reference sequence. Given the viral load is negatively correlated with the distance, suggesting the larger the distance, the lower the viral load this could be seen as a fitness loss associated with the evolutionary pressure of replicating within the host;
 * site, the tissue type of the sample. This will affect the environment of replication as well as the accessbility of the site to CD4-positive cells;
 * Shannon score, a measurement of the viral population diversity: more diverse populations may have adaptive advantages in the response to the immune system or drugs. On the other hand, specific viruses can be randomly selected through bottleneck effects;
@@ -526,5 +574,4 @@ According to this model, HIV viral load is best explained by taking into account
 * distance to reference interaction with site: once the virus infects a tissue, it may need to adapt to that tissue's environment and hence it will evolve towards or away from the genome reference used.
 
 All these appear to be sensible factors in explaining the viral load in a given sample.
-
 
