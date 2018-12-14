@@ -1,0 +1,154 @@
+---
+Mahmuda Bashir ID-170941022
+title: "Assingnemnt-1"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r marine_table}
+marine_table=read.table("part_1_student_1311.tdf", header=TRUE) #uploading the dataset to R as a table.
+attach(marine_table) 
+View(marine_table)
+hist(UniFracInd) # to see the distribution of the data.
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+boxplot(UniFracInd~latitude, col=c("skyblue", "lightgreen"), main="Microbial diversity based on Latitude", xlab="Latitude", ylab="UniFracInd Frequency") # a box plot to visualize the data diversity.
+t.test(UniFracInd~latitude) # t-test to find the significance in latitudes.
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+boxplot(UniFracInd~season, col=c("lightpink", "orange"), main="Microbial diversity based on Season", xlab="Time of the Year", ylab="UniFracInd Frequency") #boxplot with different colour to see visualize the data.
+t.test(UniFracInd~season)
+```
+```{r}
+# Find the interaction of microbial diversity based on the latitude and seasonal changes. 
+interaction=lm(UniFracInd~latitude*season)
+anova(interaction) #unpaired anova test.
+
+```
+```{r} 
+# for data_set 2
+luciferase=read.table("part_2_student_1311.tdf", header=TRUE) # to read the table and set it in a variable. 
+summary(luciferase) # give us mean, median, other quardent values.
+attach(luciferase) # attch the file so we dont have to define each variable every step.
+
+#View(luciferase) 
+```
+
+```{r}
+# Data_set2
+plot(expression_fold~distance, main="Homologus expression change with Distance", pch=20)
+abline(lm(expression_fold~distance), col="red")
+
+```
+
+```{r}
+cor.test(expression_fold,distance)
+```
+
+
+
+```{r}
+# Question_2
+#par(mfrow=c(2,2))
+plot(lm(expression_fold~distance))
+
+```
+
+For the data_set_3
+
+```{r}
+HIV<-read.delim("part_3_student_1311.tdf", header = TRUE)
+##assigning each of the variable of the file.
+vir<-HIV$VLoad
+shanon<-HIV$score_shannon
+distance<-HIV$score_distance
+tissue<-HIV$tissue
+CD4<-HIV$CD4
+
+```
+
+```{r}
+plot(tissue,vir, col=c("lightblue","pink"), main = "Viral load in different tissues" , xlab = "Viral load in Brain and SpinalCord", ylab = "Viral Load")
+```
+```{r}
+plot(CD4,vir,col=c("lightblue","pink"), main="Viral load in CD4 count")
+```
+```{r}
+plot(shanon,vir, main = "Viral Load Vs Shannon Score")
+abline(lm(vir~shanon),col="red")
+```
+
+```{r}
+cor.test(shanon,vir) #correlation test between shannon score and viral load.
+```
+
+
+
+```{r}
+plot(distance,vir, main = "Viral load and genetic Distances")
+```
+
+```{r}
+pseudo_model=lm(vir~CD4:shanon:distance) #1st proposed model
+anova(pseudo_model)
+```
+
+
+```{r}
+my_model=lm(vir~tissue:shanon) #propposed model
+anova(my_model)
+#summary(prop_model)
+```
+```{r}
+back<-step(lm(vir~CD4+tissue+shanon+distance), direction="backward") #backward model stimulation
+
+
+```
+```{r}
+forward<-step(lm(vir~1),scope = (~tissue+CD4+shanon+distance), direction = "forward") #forward model stimulation
+```
+
+```{r}
+both<-step(lm(vir~tissue*CD4),scope=c(lower=~CD4, upper=~tissue*CD4*shanon*distance),direction="both") #both way model stimulation
+```
+
+```{r}
+anova(back,forward,both,my_model,pseudo_model) #ANOVA analysis for all the models
+```
+
+
+```{r}
+#plot(prop_model)
+```
+```{r}
+#plot(forward)
+```
+```{r}
+cor.test(vir,shanon)
+```
+```{r}
+t.test(vir,shanon) #t-test between viral load and shannon score
+```
+
+```{r}
+
+```
+
