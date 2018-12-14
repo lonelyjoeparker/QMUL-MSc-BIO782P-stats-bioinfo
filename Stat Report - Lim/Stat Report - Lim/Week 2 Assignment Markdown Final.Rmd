@@ -1,0 +1,163 @@
+---
+title: "Week 2 Assignment Markdown"
+author: "Gabriel Wee Kiat Lim. Student Number: 180703634"
+date: "11/12/2018"
+output: html_document
+---
+
+
+```{r}
+stimulation_potential = seq(-100, 40, by=10)
+response_voltage_control = c(-70.00000,-70.00000,-70.00000,-70.00000,-70.00000,35.79871,38.75082,39.30423,39.65390,35.55835,35.66762,36.55754,39.51027,35.65274,39.17013)
+response_voltage_concN_1 = c(-70.00000,-70.00000,-70.00000,-70.00000,37.88144,35.64345,36.54319,36.18773,36.67542,38.56634,38.53102,37.73421,38.69826,38.67744,37.21896)
+response_voltage_concN_2 = c(-70.00000,-70.00000,-70.00000,37.16110,39.28471,36.57506,38.03037,39.37853,39.92131,39.01116,39.46393,36.16073,37.70418,35.88598,38.53137)
+response_voltage_concN_3 = c(-70.00000,-70.00000,36.25729,35.70035,35.61478,36.81245,37.01299,39.34139,36.59520,35.00749,37.94440,36.10611,37.15617,35.29182,35.32412)
+
+plot(stimulation_potential,stimulation_potential,type='n',xlab='Stimulation, mV',ylab='Excitation, mV')
+lines(stimulation_potential,response_voltage_control)
+lines(stimulation_potential,response_voltage_concN_1,col="green")
+lines(stimulation_potential,response_voltage_concN_2,col="orange")
+lines(stimulation_potential,response_voltage_concN_3,col="red")
+
+legend(0,20,"control",fill="black")
+legend(0,00,"concentration 1",fill="green")
+legend(0,-20,"concentration 2",fill="orange")
+legend(0,-40,"concentration 3",fill="red")
+
+
+
+predict = function(activation_threshold,stimulation_voltage){
+  activation = rep(-70,length(stimulation_voltage)) 
+  activation[stimulation_voltage>activation_threshold] = 40
+  return(activation)
+}
+
+calculate_errors = function(predicted, observed){
+  total_errors = sum((observed - predicted)^2)
+  return(total_errors)
+}
+
+fit_threshold = function(input_values_stimulation,input_values_response,threshold){
+  predicted_values = predict(threshold,input_values_stimulation)
+  fit_errors = calculate_errors(predicted_values,input_values_response)
+  return(fit_errors)
+}
+```
+
+For control treatment
+
+```{r} 
+threshold_ctrl=rep(NA,100)
+error_ctrl=rep(NA,100)
+
+
+fitted_threshold = runif(1,-100,40)
+error = fit_threshold(stimulation_potential,response_voltage_control,fitted_threshold)
+
+for(i in 1:100){
+  new_threshold = runif(1,-70,-40) #tighting range around control threshold range
+  new_error     = fit_threshold(stimulation_potential,response_voltage_control,new_threshold)
+  if(new_error<error){
+    fitted_threshold = new_threshold
+    error = new_error
+  }
+  threshold_ctrl[i] = new_threshold
+  error_ctrl[i]= error
+}
+ 
+  
+
+
+threshold_ctrl
+error_ctrl
+write.csv(data.frame('fitted value'=threshold_ctrl,'errors SS'=error_ctrl),file = 'excitation_control.csv',row.names = F)
+```
+
+for response_voltage_concN_1 nicotine treatment
+
+```{r} 
+threshold1=rep(NA,100)
+error1=rep(NA,100)
+
+
+fitted_threshold = runif(1,-100,40)
+error = fit_threshold(stimulation_potential,response_voltage_concN_1,fitted_threshold)
+for(i in 1:100){
+  new_threshold = runif(1,-80, -50)
+  new_error     = fit_threshold(stimulation_potential,response_voltage_concN_1,new_threshold)
+  if(new_error < error){
+    fitted_threshold = new_threshold
+    error = new_error
+  }
+  threshold1[i] = new_threshold
+  error1[i]= error
+}
+ 
+
+threshold1
+error1
+write.csv(data.frame('fitted value'=threshold1,'errors SS'=error1),file = 'excitation_conc1.csv',row.names = F)
+```
+For response_voltage_concN_2 nicotine treatment
+```{r} 
+threshold2=rep(NA,100)
+error2=rep(NA,100)
+
+
+fitted_threshold = runif(1,-100,40)
+error = fit_threshold(stimulation_potential,response_voltage_concN_2,fitted_threshold)
+
+for(i in 1:100){
+  new_threshold = runif(1,-90,-60) #tightening range
+  new_error     = fit_threshold(stimulation_potential,response_voltage_concN_2,new_threshold)
+  if(new_error < error){
+    fitted_threshold = new_threshold
+    error = new_error
+  }
+  threshold2[i] = new_threshold
+  error2[i]= error
+}
+
+
+threshold2
+error2
+write.csv(data.frame('fitted value'=threshold2,'errors SS'=error2),file = 'excitation_conc2.csv',row.names = F)
+```
+
+For response_voltage_concN_3 nicotine treatment
+
+```{r} 
+threshold3=rep(NA,100)
+error3=rep(NA,100)
+
+
+fitted_threshold = runif(1,-100,40)
+error = fit_threshold(stimulation_potential,response_voltage_concN_3,fitted_threshold)
+  
+for(i in 1:100){
+  new_threshold = runif(1,-100,-70) #tightening range
+  new_error     = fit_threshold(stimulation_potential,response_voltage_concN_3,new_threshold)
+    
+  if(new_error < error){
+    fitted_threshold = new_threshold
+    error = new_error
+  }
+  threshold3[i] = new_threshold
+  error3[i]= error
+}
+
+
+threshold3
+error3
+write.csv(data.frame('fitted value'=threshold3,'errors SS'=error3),file = 'excitation_conc3.csv',row.names = F)
+```
+perform t-test
+```{r}
+t.test(threshold1, threshold_ctrl)
+```
+```{r}
+t.test(threshold_ctrl, threshold2)
+```
+```{r}
+t.test(threshold_ctrl, threshold3)
+```
