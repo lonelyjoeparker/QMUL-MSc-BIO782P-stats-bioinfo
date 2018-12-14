@@ -1,0 +1,157 @@
+---
+title: "Week 1 Assignment"
+author: "Gabriel Wee Kiat Lim. Student Number: 180703634"
+date: "12/12/2018"
+output: html_document
+---
+Q1 Code
+```{r} 
+marine=read.table("part_1_student_1773.tdf", header=TRUE)  #data file in same folder as script
+attach(marine)
+names(marine)
+str(marine)
+library(psych) #load psych package: to use describeBy()
+
+#microbial diversity with latitude
+describeBy(marine$UniFracInd, marine$latitude ) #provide mean UniFracInd for temperate and tropical
+
+plot(marine$latitude, marine$UniFracInd, ylab="Microbial Diversity (UniFracInd)")
+qqnorm(UniFracInd)
+qqline(UniFracInd)
+shapiro.test(UniFracInd) #to test whether distribution is significantly different from normal distribution
+
+model1=lm(UniFracInd~latitude)
+anova(model1)
+summary(model1)
+par(mfrow=c(2,2))
+plot(model1)
+
+t.test(UniFracInd~latitude) #to test if difference of UniFracInd between latitudes is significant
+```
+
+```{r} 
+plot(marine$season, UniFracInd, ylab="Microbial Diversity (UniFracInd)")
+describeBy(marine$UniFracInd, marine$season ) 
+
+model2=lm(UniFracInd ~ season)
+anova(model2)
+summary(model2)
+par(mfrow=c(2,2))
+plot(model2)
+
+kruskal.test(UniFracInd~season) #to test whether the median of the 2 seasons (Aug and Jan) are different from each other.
+```
+
+```{r} 
+
+marine.aov=aov(UniFracInd~factor(latitude)*factor(season), data=marine) 
+#interaction between factors season and latitude
+summary(marine.aov)
+
+par(mfrow=c(2,2))
+interaction.plot(season, latitude, UniFracInd)
+boxplot(UniFracInd~interaction(season, latitude), col=c("steelblue","darkgreen"), ylab="UniFracInd", las=2)
+
+
+```
+
+Q2 Code
+
+```{r} 
+expdist=read.table("part_2_student_1773.tdf", header=TRUE)
+attach(expdist)
+names(expdist)
+str(expdist)
+shapiro.test(distance) #test normality of distribution
+#distance data distribution not significantly different from normal
+qqnorm(distance)
+shapiro.test(expression_fold)
+# expression_fold data not significantly different from normal
+qqnorm(expression_fold)
+
+#Generate scatterplot of Expression_fold versus genetic distance
+plot(expdist$distance, expdist$expression_fold, xlab = "Distance", ylab = "Expression Fold") 
+abline(2,1) #add a straight line to aid analysis
+
+#ks.test(expdist$distance, expdist$expression_fold)
+#cor.test(expdist$distance, expdist$expression_fold, method="spearman")
+
+#Fit model of expression_fold with genetic distance
+modelE=lm(expression_fold~distance)
+summary(modelE)
+anova(modelE)
+par(mfrow=c(2,2))
+plot(modelE)
+
+#Perform transformation as Q-Q plot in modelE shows a slight curve
+modelE2=lm(expression_fold~ sqrt(distance)) 
+summary(modelE2)
+anova(modelE2)
+plot(modelE2)
+#square-root transformation has improved the Q-Q plot
+#Residual vs Fitted plot showed some heteroscedasticity
+
+#Perform log transformation
+modelE3=lm(log(expression_fold)~ log(distance))
+summary(modelE3)
+anova(modelE3)
+plot(modelE3)
+#log transformation has improved the Q-Q plot
+#Residual vs Fitted plot showed more heteroscedasticity
+
+```
+Q3 Code
+
+```{r} 
+hiv=read.table("part_3_student_1773.tdf", header=TRUE)
+
+plot(hiv$score_shannon, hiv$VLoad) #plot VLoad against score_shannon to explore relationship visually
+plot(hiv$score_distance, hiv$VLoad)#plot VLoad against score_distance to explore relationship visually
+
+#boxplot to explore relationship between Vload and CD cell count
+boxplot(hiv$VLoad~hiv$CD4, xlab="CD4 cell counts", ylab="Viral population size[log10(number of viral particles per ml)]")
+#boxplot to explore relationship between Vload and tissue part
+boxplot(hiv$VLoad~hiv$tissue, xlab="tissue part", ylab="Viral population size[log10(number of viral particles per ml)]")
+
+
+#stepwise regression - backwards
+back_model=step(lm(hiv$VLoad ~ hiv$score_distance * hiv$tissue * hiv$score_shannon ),direction="backward")
+summary(back_model)
+
+# step forward
+min.model=lm(hiv$VLoad ~1) #set up minimum model
+forward_model=step(min.model, direction="forward",scope=(~ hiv$score_distance + hiv$CD4 + hiv$tissue + hiv$score_shannon), trace=0)
+#scope is the variables to add to the model when stepping forward
+summary(forward_model)
+#forward_model: hiv$VLoad ~ hiv$score_shannon + hiv$score_distance
+
+anova(forward_model, back_model)
+#no significant difference between the models, selected forward_model as it is the simpler model. 
+
+#heuristic model fitting
+mymod_1=lm(hiv$VLoad ~ hiv$score_shannon * hiv$score_distance)
+anova(mymod_1)
+
+mymod_2=update(mymod_1, . ~ . -hiv$score_shannon:hiv$score_distance)
+summary(mymod_2)
+anova(mymod_2)#mymod_2 is the same as forward_model, so will just use forward model
+
+#Simplify model to just Vload and score_shannon
+mymod_3=lm(hiv$VLoad ~ hiv$score_shannon)
+anova(mymod_3)
+summary(mymod_3)
+#mymod_3 appears to be the model with the best p-value
+
+anova(forward_model, mymod_3)
+#these 2 models are significantly different
+
+par(mfrow=c(2,2))
+plot(mymod_3)
+
+#spearman test to see whether there is a relation between the 2 variables of mymod_3
+cor.test(hiv$score_shannon, hiv$VLoad, method="spearman", exact = FALSE )
+#the test showed that there is a significant relationship
+
+
+
+```
