@@ -1,0 +1,78 @@
+```{r}
+part1data=read.delim('part_1_student_1352.tdf.txt',header=TRUE) #read dataset 1
+```
+```{r}
+plot(part1data$latitude, part1data$UniFracInd, main='Microbial diversity change with Latitude',ylab='Microbial diversity assessed using UniFrac', xlab='Latitude') 
+#plot unifrac data versus latitude
+```
+```{r}
+hist(part1data$UniFracInd)   #data is assumed normally distributed
+t.test(part1data$UniFracInd~part1data$latitude) #student t-test used to compare the groups within latitude to each other
+```
+```{r}
+plot(part1data$season, part1data$UniFracInd, main='Microbial diversity change with Time of Year',ylab='Microbial diversity assessed using UniFrac', xlab='Time of Year')
+#plot unifrac data versus time of year
+```
+```{r}
+t.test(part1data$UniFracInd~part1data$season)
+#student t-test to compare the seasons within time of year to each other
+```
+```{r}
+model1=lm(part1data$UniFracInd~part1data$latitude*part1data$season)
+plot(model1)
+#model is plotted to visualize data
+anova(model1)
+#anova is used to compare unifrac relation to both latitude and time of year
+```
+```{r}
+part2data=read.delim('part_2_student_1352.tdf.txt',header=TRUE)
+#part 2 data set is read
+model2=lm(part2data$expression_fold~part2data$distance)
+#linear model is constructed for homologue expression in terms of genetic distance 
+plot(part2data$expression_fold~part2data$distance, ylab='Homologue Expression',xlab='Genetic distance',main='Homologue Expression vs Genetic Distance') 
+#plot of expression vs distance is produced
+abline(model2)
+#line of best fit is added to the data
+summary(model2)
+```
+```{r}
+plot(model2)
+#diagnostic plots of the models to check model assumptions
+```
+```{r}
+cor.test(part2data$expression_fold,part2data$distance)
+#pearson correlation test is used to evaluate relation between expression and distance
+```
+
+```{r}
+part3data=read.delim('part_3_student_1352.tdf.txt',header=TRUE)
+#part 3 data is read by r
+```
+
+```{r}
+#stepwise linear regression modelling using AIC 
+backward_model=step(lm(VLoad~CD4+tissue+score_shannon+score_distance,data=part3data), direction = "backward")
+#backward step-wise model
+
+forward_model=step(lm(VLoad~tissue,data=part3data),direction = 'forward',scope=~CD4+tissue+score_shannon+score_distance,data=part3data)
+#forward step-wise model
+
+both_model=step(lm(VLoad~CD4+tissue+score_shannon+score_distance,data=part3data),scope=c(lower=VLoad~CD4, upper=VLoad~CD4+tissue+score_shannon+score_distance,data=part3data),  direction = "both")
+
+
+#both direction step-wise model
+```
+
+```{r}
+ plot(both_model)
+#diagnostic plots for dataset 3 model
+```
+
+```{r}
+plot(part3data$VLoad~part3data$tissue,main="Viral load in relation to tissue",xlab="Tissue",ylab = "Viral load" )
+plot(part3data$VLoad~part3data$CD4,main="Viral load in relation to CD4",xlab="CD4 level",ylab = "Viral load" )
+#relationship between viral load and CD4 plotted
+```
+
+
+
