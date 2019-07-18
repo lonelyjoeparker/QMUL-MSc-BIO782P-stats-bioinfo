@@ -6,11 +6,11 @@ These lectures and labs include content authored by Rob Knell (2016) where so ma
 
 Day | Date | Lecture | Lab | Goals | Assessment
 --- | ---- | ------- | --- | ----- | ----------
-1  | Monday 5th November 2018  | Introduction: Statistics and Bioinformatics  | Introduction to R  | Why bioinformatics is statistical; How to use R; Basic exploratory analyses  | (CWK1 5%) Simply plot data
-2  | Tuesday 6th November 2018  | Basic statistics  | Chi-squared, Student T  | Simple summary measures  | (CWK1 5%) Mean; median; contingency tables; difference statistics and Cis
-3  | Weds 7th November 2018  | ANOVA and LMs  | ANOVA and LMs  | ANOVA, regression  | (CWK1 20%) Anova, regression
-4  | Thursday 8th November 2018  | General linear models  | GLM I  | GLMs, error, interactions  | (CWK1 20%) GLMs
-5  | Friday 9th November 2018  | More GLMs: Selection, experimental design, assumptions  | GLM II  | Model selection  | (CWK1 50%) Appropriate selection, main assessment
+1  | Monday 5th November 2018  | Introduction: Statistics and Bioinformatics (R. Knell, J. Parker) | Introduction to R  (R. Knell, J. Parker) | Why bioinformatics is statistical; How to use R; Basic exploratory analyses  | (CWK1 5%) Simply plot data
+2  | Tuesday 6th November 2018  | Basic statistics  (R. Knell, J. Parker) | Chi-squared, Student T  (R. Knell, J. Parker) | Simple summary measures  | (CWK1 5%) Mean; median; contingency tables; difference statistics and Cis
+3  | Weds 7th November 2018  | ANOVA and LMs  (R. Knell, J. Parker) | ANOVA and LMs  (R. Knell, J. Parker) | ANOVA, regression  | (CWK1 20%) Anova, regression
+4  | Thursday 8th November 2018  | General linear models  (R. Knell, J. Parker) | GLM I  (R. Knell, J. Parker) | GLMs, error, interactions  | (CWK1 20%) GLMs
+5  | Friday 9th November 2018  | More GLMs: Selection, experimental design, assumptions  (R. Knell, J. Parker) | GLM II  (R. Knell, J. Parker) | Model selection  | (CWK1 50%) Appropriate selection, main assessment
 6  | Monday 12th November 2018  | What is a model? **NOTE: 1000-1100**  | Simulation; phylogenetics  | Modelling context  | (CWK2 50%) Simulation
 7  | Tuesday 13th November 2018  | Beyond GLMs  | Models &amp; simulation (Pt. II)  | Beyond GLMs in para space  | None
 8  | Wednesday 14th November 2018  | Big data bioinformatics | Regex; Group project | Issues in big data (reproducibility; FDR; power/effect size; distributions)  | None
