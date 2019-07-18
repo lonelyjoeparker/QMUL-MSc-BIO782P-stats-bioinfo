@@ -1,5 +1,6 @@
 # QMUL-MSc-BIO782P-stats-bioinfo
-Labs content for 2017 & 2018 QMUL MSc Bioinformatics BIO782P (Stats &amp; Bioinformatics) module
+Labs content for 2017 & 2018 QMUL MSc Bioinformatics BIO782P (Stats &amp; Bioinformatics) module.
+These lectures and labs include content authored by Rob Knell (2016) where so marked.
 
 ## Course overview
 
